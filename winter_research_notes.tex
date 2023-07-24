@@ -1,0 +1,649 @@
+%BEGIN_FOLD
+\documentclass{amsart}[]
+
+\makeatletter
+\def\@tocline#1#2#3#4#5#6#7{\relax
+	\ifnum #1>\c@tocdepth % then omit
+	\else
+	\par \addpenalty\@secpenalty\addvspace{#2}%
+	\begingroup \hyphenpenalty\@M
+	\@ifempty{#4}{%
+		\@tempdima\csname r@tocindent\number#1\endcsname\relax
+	}{%
+		\@tempdima#4\relax
+	}%
+	\parindent\z@ \leftskip#3\relax \advance\leftskip\@tempdima\relax
+	\rightskip\@pnumwidth plus4em \parfillskip-\@pnumwidth
+	#5\leavevmode\hskip-\@tempdima
+	\ifcase #1
+	\or\or \hskip 1em \or \hskip 2em \else \hskip 3em \fi%
+	#6\nobreak\relax
+	\dotfill\hbox to\@pnumwidth{\@tocpagenum{#7}}\par
+	\nobreak
+	\endgroup
+	\fi}
+\makeatother
+
+\RequirePackage{amssymb}
+\RequirePackage{amsmath}
+\RequirePackage{amsthm}
+\RequirePackage{enumerate}
+\RequirePackage{mathtools}
+\RequirePackage{tikz-cd}
+\RequirePackage{filecontents}
+\RequirePackage{cancel}
+\RequirePackage[hidelinks,colorlinks=true,linkcolor=blue,allcolors=blue]{hyperref}
+
+\renewcommand{\refname}{Bibliography}
+
+\newcommand{\R}{\mathbb R}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\C}{\mathbb C}
+\newcommand{\why}{\color{red}(why?)\color{black}}
+\newcommand{\alert}[1]{\color{red}#1\color{black}}
+\newcommand{\iso}{\text{\normalfont Iso}}
+\newcommand{\lie}{\text{\normalfont Lie}}
+\newcommand{\der}{\text{\normalfont der}}
+\newcommand{\aut}{\text{\normalfont Aut}}
+\newcommand{\arctanh}{\text{\normalfont Arctanh}}
+\newcommand{\grad}{\text{\normalfont grad}}
+\newcommand{\hess}{\text{\normalfont Hess}}
+\newcommand{\tr}{\text{\normalfont tr}}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[subsection]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+
+%END_FOLD
+
+\title{Winter Research Notes}
+\author{Joseph Kwong}
+
+\begin{document}
+	\maketitle
+\section{Riemannian Geometry}
+	\subsection{Miscellaneous}
+	\begin{proposition}
+		Let $(M,g)$ be a complete, connected Riemannian manifold. Let $p \in M$, and let $d_p:M \rightarrow \R$ be given by $q \mapsto d(p,q)$. Then the function $(d_p)^2:M \rightarrow \R$ is smooth.
+	\end{proposition}
+	\begin{proof}
+		\alert{In a neighbourhood of $0$, the exponential map $\exp_p:T_p M \rightarrow M$ is a diffeomorphism. This shows that $(d_p)^2$ is smooth around $p$. What about smoothness elsewhere?}
+	\end{proof}
+
+	\begin{definition}
+		We say that a Riemannian manifold $(M,g)$ is \emph{Riemannian homogeneous} if $\iso(M,g)$ acts transitively on $M$.
+	\end{definition}
+
+	\subsection{Submanifolds} In what follows, let $(\widetilde M, \widetilde g)$ be a Riemannian manifold of dimension $m$, and let $M \subseteq \widetilde M$ be an embedded submanifold of dimension $n$ equipped with $g := \iota^* \widetilde g$.
+	\begin{proposition}
+		Let $p \in M$. Then there exists a smooth orthonormal frame $(E_i)$ for $\widetilde M$ around $p$ such that $(E_1,\ldots,E_n)$ are tangent to $M$.
+	\end{proposition}
+	\begin{proof}
+		Let $(\widetilde U, (\widetilde x^i))$ be a slice chart around $p$, and let $(U,(x^i))$ be the induced chart for $M$. It can be shown that $\partial_i = \widetilde \partial_i$ for each $i = 1,\ldots,n$. Applying the Gram-Schmidt algorithm on $(\widetilde \partial_1,\ldots,\widetilde \partial_m)$ gives an orthonormal frame $(E_1,\ldots,E_n)$ for $\widetilde M$ such that 
+		$\mathrm{span}(E_1|_q,\ldots,E_n|_q) = \mathrm{span}(\widetilde \partial_1|_q,\ldots, \widetilde\partial_n|_q) = T_q M$ for $q \in U$.
+	\end{proof}
+
+	\begin{definition}
+		For each $p \in M$, we define the \emph{normal space at $p$} by $N_p M := (T_p M)^\perp$. Thus, we can write $T_p \widetilde M = T_p M \oplus N_p M$. This gives projections 
+		$$\pi^\top: T_p \widetilde M \rightarrow T_p M,\qquad \pi^\perp: T_p \widetilde M \rightarrow N_p M.$$
+		We define the \emph{normal bundle of $M$} by 
+		$NM := \{(p,v) \in TM \mid v \in N_p M\}.$
+		
+		A smooth vector field $N:M \rightarrow T\widetilde M$ is a \emph{normal vector field along $M$} if $N_p \in N_p M$ for every $p \in M$. 
+	\end{definition}
+
+	\begin{definition}
+		We define the \emph{second fundamental form} to be the map 
+		$\mathrm{II}:\mathfrak X(M) \times \mathfrak X(M) \rightarrow \Gamma(NM)$ given by the following: for $X,Y \in \mathfrak X(M)$, let $\widetilde X, \widetilde Y$ be extensions of $X$ and $Y$ to an open subset of $\widetilde M$. Set $\mathrm{II}(X,Y) := \pi^\perp(\widetilde \nabla_{\widetilde X}\widetilde Y).$
+	\end{definition}
+	
+	\begin{remark}
+		The value of $\mathrm{II}(X,Y)$ is independent of the choice of extensions: given $p \in M$, $\widetilde \nabla_{\widetilde X}\widetilde Y|_p$ depends only on $X_p$ and the value of $Y$ along a smooth curve $\gamma:I \rightarrow S$, where $\gamma(0) = p$ and $\gamma'(0) = X_p$.
+ 	\end{remark}
+ 
+ 	\begin{proposition}
+ 		The second fundamental form satisfies the following:
+ 		\begin{enumerate}[\normalfont (i)]
+ 			\item $\mathrm{II}$ is symmetric.
+ 			\item $\mathrm{II}$ is bilinear over $C^\infty(M)$.
+ 			\item $\mathrm{II}(X,Y)$ depends only on $X_p$ and $Y_p$.
+ 		\end{enumerate}
+ 	\end{proposition}
+ 	\begin{proof}
+ 		We have 
+ 		$$\mathrm{II}(X,Y) - \mathrm{II}(Y,X) = \pi^\perp( \widetilde \nabla_{\widetilde X} \widetilde Y - \widetilde \nabla_{\widetilde Y} \widetilde X) = \pi^\perp[\widetilde X, \widetilde Y] = 0,$$
+ 		where the second last equality follows from symmetry of $\nabla$, and the last equality follows because the bracket of two tangent vector fields is tangent \why. This shows (i).
+ 		
+ 		Now, $\mathrm{II}(X,Y)$ depends only on $X_p$ because $\widetilde\nabla_{\widetilde X}\widetilde Y$ depends only on $X_p$. Moreover, $\mathrm{II}$ is $C^\infty(M)$ linear in the first argument because $\widetilde \nabla$ is $C^\infty(M)$ linear in the first argument. Part (i) implies (ii) and (iii).
+ 	\end{proof}
+ 
+ 
+ 	\begin{definition}
+ 		Let $N:M \rightarrow NM$ be a smooth normal vector field along $M$. We define the \emph{Weingarten map in the direction $N$} to be the map $W_N: \mathfrak X(M) \rightarrow \mathfrak X(M)$ given by 
+ 		$\langle W_N(X),Y \rangle = \langle N, \mathrm{II}(X,Y) \rangle.$
+ 	\end{definition}
+ 
+ 	\begin{definition}
+ 		Suppose that $M$ is a hypersurface. Let $N$ be a smooth unit normal vector field along $M$. We define the \emph{mean curvature} by $H := \frac1n \tr(W_N)$.
+ 	\end{definition}
+ 
+ 	\begin{proposition}
+ 		Let $(\widetilde M, \widetilde g)$ be a Riemannian manifold. Let $f \in C^\infty(\widetilde M)$, and let $c \in \R$ be a regular value of $f$. Then $M := f^{-1}(c)$ is a smooth embedded hypersurface, and $\grad(f)$ is everywhere normal to $f^{-1}(c)$.
+ 	\end{proposition}
+ 	\begin{proof}
+ 		The fact that $M$ is an embedded hypersurface follows by Corollary 5.1.4 in Lee's Smooth Manifolds. 
+ 		
+ 		Fix $p \in M$, and let $v \in T_p M$. Let $\gamma:(-\varepsilon,\varepsilon)\rightarrow M$ be a smooth curve such that $\gamma(0) = p$ and $\gamma'(0) = v$. Then 
+ 		$\langle \grad(f)_p, v \rangle  = df_p(v) = (f \circ \gamma)'(0) = 0.$
+ 	\end{proof}
+	
+	\begin{proposition}
+		Let $(\widetilde M, \widetilde g)$ be a Riemannian manifold.  Let $f \in C^\infty(\widetilde M)$, and suppose that there exist continuous functions $a,b:\R \rightarrow \R$ such that $|\grad(f)|^2 = b(f)$ and $\Delta f = a(f)$. Let $c \in \R$ be a regular value for $f$. Write $M := f^{-1}(c)$, and equip $M$ with the unit normal field given by $N := \grad(f)/|\grad(f)|$. Then $M$ has constant mean curvature.
+	\end{proposition}
+	\begin{proof}
+		Recall that $H = \frac1n \tr(W_N)$, so it suffices to show that $\tr(W_N)$ is constant. Let $p \in M$, and let $(E_1,\ldots,E_{m-1}, N)$ be an adapted orthonormal frame around $p$. Then
+		\begin{align*}
+			\tr(W_N)(p) &= \sum_{i=1}^{m-1} \langle W_n E_i, E_i \rangle(p) = \sum_{i=1}^{m-1} \langle N, \widetilde \nabla_{E_i} E_i \rangle(p) \\
+			&= 
+			\frac{1}{|\grad(f)_p|}  \sum_{i=1}^{m-1} df_p(\widetilde \nabla_{E_i} E_i|_p)\\
+			& = 
+			(b(c))^{-\frac12} \sum_{i=1}^{m-1}( \widetilde \nabla_{E_i} \cancel{df(E_i)}|_p - \hess(f)(E_i, E_i))_p \\
+			&= - (b(c))^{-\frac12} \tr_g(\hess(f)_p) = -(b(c))^{-\frac12}  a(c). 
+		\end{align*}
+		Thus, we have shown that $\tr(W_N)$ is constant.
+	\end{proof}
+
+	\subsection{The Laplace-Beltrami Operator}
+	\begin{proposition}
+		\label{general_laplacian}
+		Let $(M,g)$ be a smooth manifold, and let 
+		$f \in C^\infty(M)$. Let $\{E_i\}$ be a smooth global orthonormal frame on $U$. Then we can write
+		$$\Delta f = \sum_{i=1}^n E_i^2 f - \sum_{i=1}^n (\nabla_{E_i}E_i) f.$$
+	\end{proposition}
+	\begin{proof}
+		First, recall that the \emph{Hessian} of $f$ is a $(0,2)$-tensor given by 
+		$$\hess(f)(X,Y) = X(Yf) - (\nabla_X Y)f.$$
+		The Laplacian of $f$ is given by 
+		$$\Delta f = \tr_g(\hess(f)) = \tr(\hess(f)^\sharp),$$
+		where  $\hess(f)^\sharp$ is the (1,1)-tensor given by
+		$$\hess(f)(X, \omega) := \hess(f)(X, \omega^\sharp).$$
+		
+		Next, let $\{\varepsilon^j\}$ be the dual frame of $\{E_i\}$ \alert{(why is the dual frame smooth?)}. Observe that, for any vector field $X = X^i E_i$, we have 
+		$$\langle( \varepsilon^j)^\sharp, X\rangle = \varepsilon^j(X) = X^i = \langle E_j, X\rangle,$$
+		which implies that $(\varepsilon^j)^\sharp = E_j$ \why. We can write 
+		$$\hess(f)^\sharp = h_{i}^j \varepsilon^i \otimes E_j.$$
+		The coefficients can be computed to be 
+		$$ h_{i}^j = \hess(f)^\sharp(E_i, \varepsilon^j) = \hess(f)(E_i, (\varepsilon^j)^\sharp) = \hess(f) (E_i, E_j).$$
+		Finally, 
+		$$\Delta f = \tr(\hess(f)^\sharp) = \sum_{i=1}^n h_i^i = \sum_{i=1}^n\hess(f) (E_i, E_i).$$
+		Expanding the final expression gives the result.
+	\end{proof}
+
+\section{Lie Groups and Lie Algebras}
+	\subsection{The Lie Algebra of a Lie Group}
+	\begin{definition}
+		A \emph{Lie group} $G$ is a group endowed with a smooth manifold structure such that multiplication and inversion are smooth. 
+	\end{definition}
+	
+	\begin{definition}
+		A Lie algebra $\mathfrak g$ is a real vector space equipped with a bilinear form $[\cdot,\cdot]:\mathfrak g \times  \mathfrak g \rightarrow \mathfrak g$ which satisfies $[X,X] = 0$ and the Jacobi identity:
+		$$[X,[Y,Z]] + [Z,[X,Y]] + [Y,[Z,X]].$$
+	\end{definition}
+	
+	\begin{definition}
+		Let $G$ be a Lie group. We say that a vector field $X \in \mathfrak X(G)$ is \emph{left invariant} if $X_{g p} = d(L_g)(X_p)$ for any $g,p \in G$. We denote the collection of all left invariant vector fields by $\lie(G)$.
+	\end{definition}
+
+	\begin{proposition}
+		Let $G$ be a Lie group. The collection of left invariant vector fields $\lie(G)$ forms a Lie algebra when equipped with the commutator bracket.
+	\end{proposition}
+	\begin{proof}
+		First, let us show that $\lie(G)$ is a vector subspace of $\mathfrak X(G)$. Fix $X,Y \in \lie(G)$ and $\lambda \in \R$. Given $g,p \in G$, we find 
+		$$\lambda X_{gp} + Y_{gp} = \lambda d(L_g)(X_p) + d(L_g)(Y_p) = d(L_g)(\lambda X_p + Y_p).$$
+		
+		Fix $X,Y \in \lie(G)$. Let us first show that $[X,Y]$ is a smooth vector field. It suffices to show that $[X,Y]$ is a derivation on $C^\infty(G)$. Given $f \in C^\infty(M)$, we have 
+		$$[X,Y] f = X(Yf) - Y(Xf),$$
+		which belongs to $C^\infty(G)$. It is straightforward to see that $[X,Y]$ is linear over $\R$, and that 
+		$$[X,Y](fg) = f[X,Y]g + g[X,Y]f$$
+		for any $f,g \in C^\infty(G)$. Thus, $[X,Y]$ is indeed a smooth vector field.
+		
+		Next, let us show that $[X,Y]$ is left invariant. Fix $g, p \in G$, and fix $f \in C^\infty(G)$. Then 
+		\begin{align*}
+			[X,Y]_{gp} f &= X_{gp} Yf - Y_{gp} Xf = d(L_g)(X_p) Yf - d(L_g)(Y_p) Xf \\
+			&= X_p(Yf \circ L_g) - Y_p(Xf \circ L_g) = X_p(Y(f \circ L_g)) - Y_p (X(f \circ L_g)) \\
+			&= [X,Y]_p(f \circ L_g) = d(L_g)([X,Y]_p)f,
+		\end{align*}
+		so $[X,Y]$ is left invariant.
+		
+		Finally, it is straightforward to verify that 
+		$[\cdot,\cdot]:\lie(G) \times \lie(G) \rightarrow \lie(G)$
+		is indeed a Lie bracket.
+	\end{proof}
+	
+	\begin{proposition}
+		Let $G$ be a Lie group. The map $$\Phi: \lie(G) \rightarrow T_e G, \quad X \mapsto X_e$$ is a vector space isomorphism.
+	\end{proposition}
+	\begin{proof}
+		Linearity is straightforward.
+		
+		For injectivity, suppose $0 = \Phi(X) = X_e$. Then $X_g = d(L_g)(X_e) = 0$ for any $g \in G$.
+		
+		For surjectivity, suppose $v \in T_e G$. Define a section $X:G \rightarrow TG$ by
+		$X_g := d(L_g)(v).$
+		Then $X$ is smooth because it is a composition of smooth maps \why. Finally, given $g,p \in G$, we have 
+		$X_{gp} = d(L_{gp})(v) = d(L_g)(dL_g(v)) = d(L_g)(X_p).$
+		Thus, $X$ is left invariant, and $\Phi(X) =v$.
+	\end{proof}
+
+
+	\subsection{Induced Lie Algebra Homomorphisms}
+
+	\begin{proposition}
+		Let $G$ and $H$ be Lie groups, and let $F:G \rightarrow H$ be a Lie group homomorphism. For any $X \in \lie(G)$, there exists a unique left invariant vector field $F_* X \in \lie(H)$ which is $F$-related to $X$.
+	\end{proposition}
+	\begin{proof}
+		Let us first show existence. Define $F_*X := \Phi^{-1}(dF(X_e))$, where $\Phi$ is given in the previous proposition. It remains to check that $F_* X$ is $F$-related to $X$. Fix $g \in G$. Then 
+		$(F \circ L_g)(p) = F(gp) = F(g) F(p) = (L_{F(g)} \circ F)(p),$
+		so taking the differential gives $dF \circ d(L_g) = d(L_{F(g)}) \circ dF$. Thus, 
+		$$dF(X_g) = dF(d(L_g)(X_e)) = d(L_{F(g)})(dF(X_e)) = F_* X|_{F(g)},$$
+		so $F_*X$ is $F$-related to $X$.
+		
+		Next, let us show uniqueness. Suppose $Y \in \lie(H)$ is $F$-related to $X$. Then 
+		$$Y_g = d(L_g)(Y_e) = d(L_g)(dF(X_e)) = dL_g(F_* X|_e) = F_*X|_g.$$
+		This completes the proof.
+	\end{proof}
+
+	\begin{proposition}
+		Let $G$ and $H$ be Lie groups, and let $F:G \rightarrow H$ be a Lie group homomorphism. Then the map 
+		$$F_*: \lie(G) \rightarrow \lie(H), \quad X \mapsto F_* X$$
+		is a Lie algebra homomorphism.
+	\end{proposition}
+	\begin{proof}
+		Let $X,Y \in \lie(G)$, and let $\lambda \in \R$. Then
+		\begin{align*}
+			F_*(\lambda X + Y) &= \Phi^{-1}(dF(\lambda X_e + Y_e))  \\
+			&= \lambda \Phi^{-1}(dF(X_e)) + \Phi^{-1}(dF(Y_e)) = \lambda F_* X + F_* Y.
+		\end{align*}
+		Thus, $F_*$ is linear.
+		
+		Let $X,Y \in \lie(G)$. Since $F_*X$ and $F_* Y$ are $F$-related to $X$ and $Y$, respectively, it follows that $[F_* X,F_* Y]$ is $F$-related to $[X,Y]$. By uniqueness, we have $F_*[X,Y] = [F_* X,F_* Y]$. This shows that $F_*$ is a Lie algebra homomorphism.
+	\end{proof}
+
+	\begin{proposition}
+		Let $G$ and $H$ be isomorphic Lie groups. Then $\lie(G)$ and $\lie(H)$ are isomorphic Lie algebras.
+	\end{proposition}
+	\begin{proof}
+		Let $F:G \rightarrow H$ be a Lie group isomorphism. Then $F^{-1} \circ F$ and $F \circ F^{-1}$ are identities. Thus, $(F^{-1})_* \circ F_*$ and $F_* \circ (F^{-1})_*$ are identities. This shows that $F_*$ is a Lie algebra isomorphism.
+	\end{proof}
+
+	
+	
+	\subsection{The Lie Exponential Map}
+	Let $G$ be a Lie group. A consequence of the Fundamental Theorem of Flows is that, for any $X \in \lie(G)$, there exists a unique integral curve $\gamma: \R \rightarrow G$ starting at the identity.
+	\begin{proposition}
+		Let $G$ be a Lie group, and let $\gamma:\R \rightarrow G$ be a map. Then  $\gamma$ is the integral curve of some $X \in \lie(G)$ starting at the identity if and only if $\gamma$ is a Lie group homomorphism.
+	\end{proposition}
+	\begin{proof}
+		Suppose $\gamma$ is the integral curve of $X \in \lie(G)$ starting at the identity. Fix $s \in \R$. Then $t\mapsto (L_{\gamma(s)} \circ \gamma)(t) = \gamma(s)\gamma(t)$ is an integral curve of $X$ starting at $\gamma(s)$ because $X$ is $L_{\gamma(s)}$-related to itself. On the other hand, $t \mapsto \gamma(s+t)$ is also an integral curve of $X$ starting at $\gamma(s)$. Uniqueness of integral curves implies that $\gamma(s) \gamma(t) = \gamma(s+t)$, so $\gamma$ is a Lie group homomorphism.
+		
+		Conversely, suppose $\gamma: \R \rightarrow G$ is a Lie group homomorphism. Let $X := \gamma_*(d/dt)$. Fix $t \in \R$. Then $X_{\gamma(t)} = \gamma_*(d/dt)|_{\gamma(t)} = d\gamma(d/dt|_t) = \gamma'(t)$. Thus, $\gamma$ is an integral curve of $X$ starting at the identity.
+	\end{proof}
+
+	\begin{definition}
+		Let $G$ be a Lie group. We define the \emph{Lie exponential map}
+		$\exp: \lie(G) \rightarrow G$ by $$\exp(X) := \gamma(1),$$
+		where $\gamma:\R \rightarrow G$ is the unique integral curve of $X$ starting at the identity.
+	\end{definition}
+
+	\begin{proposition}
+		Let $G$ be a Lie group, and let $X \in \lie(G)$. Let $\gamma:\R \rightarrow G$ be the unique integral curve of $X$ starting at the identity. Then 
+		$$\gamma(s) = \exp(sX).$$
+	\end{proposition}
+	\begin{proof}
+		Define $\widetilde \gamma(t) := \gamma(st)$. Then $\widetilde \gamma$ is the integral curve of $sX$ starting at the identity, so $\exp(sX) = \widetilde \gamma(1) = \gamma(s)$.
+	\end{proof}
+
+
+	\begin{proposition}
+		Let $G$ be a Lie group. Let $X,Y \in \lie(G)$, and suppose $[X,Y] = 0$. Then $\exp(X+Y) = \exp(X) \exp(Y).$
+	\end{proposition}
+	\begin{proof}
+		The \alert{Baker-Campbell-Hausdorff formula } tells us that the solution $Z$ to $$\exp(X)\exp(Y) = \exp(Z)$$ is given by 
+		$$Z = X + Y + \frac12 [X,Y] + \frac1{12}[X,[X,Y]] - \frac1{12}[Y,[X,Y]] + \cdots.$$
+		The result follows because $[X,Y] = 0$.
+	\end{proof}
+	
+	\subsection{Semi-Direct Products}
+	\begin{definition}
+		Let $H$ and $N$ be Lie groups, and let $\theta:H \times N \rightarrow N$ be a smooth left action by automorphisms. By definition, this means that each $\theta_h:N \rightarrow N$ is a Lie group automorphism.
+		
+		We define the \emph{semi-direct product of $N$ and $H$ with respect to  $\theta$}, denoted $N \rtimes_{\theta} H$, as follows: as a smooth manifold, $N \rtimes_{\theta} H$ is the cartesian product $N \times H$. The group operation is given by 
+		$$(n_1,h_1)(n_2,h_2) := (n_1 \theta_{h_1}(n_2), h_1h_2).$$
+	\end{definition}
+
+	\begin{definition}
+		Let $\mathfrak g$ be a Lie algebra. We say a linear map $D:\mathfrak g \rightarrow \mathfrak g$ is a \emph{derivation on $\mathfrak g$} if it satisfies the product rule:
+		$$D[X,Y] = [DX,Y] + [X,DY].$$
+		The collection of all derivations on $\mathfrak g$ is denoted by $\der(\mathfrak g)$. Equipped with the commutator bracket $[A,B] := A \circ B - B \circ A$, $\der(\mathfrak g)$ becomes a Lie algebra.
+	\end{definition}
+
+	\begin{definition}
+		Let $\mathfrak a$ and $\mathfrak b$ be Lie algebras, and let $f: \mathfrak b \rightarrow \der(\mathfrak a)$ be a Lie algebra homomorphism. We define the \emph{semi-direct product of $\mathfrak a$ and $\mathfrak b$ with respect to $f$,} denoted $\mathfrak a \rtimes_f \mathfrak b$, as follows: as a vector space, $\mathfrak a \rtimes_f \mathfrak b$ is the direct sum $\mathfrak a \oplus \mathfrak b$. The Lie bracket is given by 
+		$$[A_1 + B_1 ,A_2 + B_2] := [A_1,A_2]_{\mathfrak a} + f(B_1)A_2 - f(B_2) A_1 + [B_1,B_2]_{\mathfrak b}.$$
+	\end{definition}
+	\alert{How does the semi-direct product of Lie groups relate to the semi-direct product of Lie algebras?}
+	
+	\subsection{Nilpotent Lie Algebras}
+	\begin{definition}
+		A Lie algebra $\mathfrak n$ is \emph{nilpotent} if the series of decreasing ideals 
+		$$\mathfrak n_0 = \mathfrak n, \quad \mathfrak n_1 = [\mathfrak n, \mathfrak n_0], \quad \mathfrak n_2 = [\mathfrak n, \mathfrak n_1],\ldots$$
+		is eventually zero. 
+		We say that $\mathfrak n$ is \emph{$k$-step nilpotent} if $\mathfrak n_{k-1} \neq 0$ and $\mathfrak n_k = 0$.
+		We say that a Lie group $N$ is \emph{$k$-step nilpotent} if $\lie(N)$ is $k$-step nilpotent.
+	\end{definition}
+	\begin{proposition}
+		Let $N$ be a simply connected nilpotent Lie group. Then the exponential map $\exp: \mathfrak n \rightarrow N$ is a diffeomorphism.
+	\end{proposition}
+	\begin{proof}
+		\alert{Why is this true?}
+	\end{proof}
+	
+	\subsection{Left Invariant Metrics}
+	\begin{definition}
+		Let $G$ be a Lie group, and let $g$ be a Riemannian metric on $G$. We say that $g$ is \emph{left invariant} if $(L_\varphi)^* g = g$ for every $\varphi \in G$.
+	\end{definition}
+	
+	Unraveling the definition, a metric $g$ is left invariant if and only if 
+	$$g_p (v,w) = g_{\varphi p} \left( d(L_\varphi)_p(v), d(L_\varphi)_p(w)\right)$$
+	whenever $\varphi,p \in G$.
+	\begin{proposition}
+		Let $G$ be a Lie group. There is a bijective correspondence
+		$$\Bigg\{ \text{\normalfont Left invariant metrics}\Bigg\} \longleftrightarrow \Bigg\{ \text{\normalfont Inner products on $T_e G$}\Bigg\},$$
+		which is given by $g \mapsto g_e$.
+	\end{proposition}
+	\begin{proof}
+		For injectivity, it suffices to show that a left invariant metric $g$ depends only on $g_e$. Indeed, taking $\varphi = p^{-1}$ in the formula above yields
+		$$g_p(v,w) = g_e \left( d(L_{p^{-1}})_p(v), d(L_{p^{-1}})_p(w)\right).$$
+		
+		Conversely, suppose $\langle \cdot , \cdot \rangle$ is an inner product on $T_e G$. Define 
+		$$g_p(v,w) := \Big\langle d(L_{p^{-1}})_p(v), d(L_{p^{-1}})_p(w)\Big\rangle.$$
+		It is straightforward to check that each $g_p$ is an inner product on $T_p G$. It remains to show that $g$ is smooth. By the tensor characterisation lemma, it suffices to check that $g$ is $C^\infty(M)$-bilinear, when viewed as a map 
+		$$g: \mathfrak X(G) \times \mathfrak X(G) \rightarrow C^\infty(M).$$
+		First, given $X,Y \in \mathfrak X(G)$, the function $g(X,Y)$ belongs to $C^\infty(M)$ as claimed: observe that 
+		$$g(X,Y)(p) = \Big\langle d(L_{p^{-1}})_p(X_p), d(L_{p^{-1}})_p(Y_p)\Big\rangle,$$
+		which is a composition of smooth functions \why. Bilinearity of $g$ over $C^\infty(M)$ follows because each $g_p$ is bilinear over $\R$.
+	\end{proof}
+
+	
+
+	\begin{proposition}
+		Let $G$ be a Lie group, and let $g$ be a left invariant metric on $G$. Then $(G,g)$ is a Riemannian homogeneous space.
+	\end{proposition}
+	\begin{proof}
+		Given $p,q \in G$, the map $L_{qp^{-1}}$ is an isometry sending $p$ to $q$.
+	\end{proof}
+
+	\begin{proposition}
+		Let $G$ be a Lie group, and let $g$ be a metric on $G$. Then $g$ is left invariant if and only if $g(X,Y)$ is constant for any $X,Y \in \lie(G)$.
+	\end{proposition}
+	\begin{proof}
+		Suppose $g$ is left invariant. Let $X,Y \in \lie(G)$. Then 
+		$$g_p (X_p, Y_p) = g_e\left(d(L_{p^{-1}})(X_p), d(L_{p^{-1}})(Y_p)\right) = g_e(X_e,Y_e),$$
+		where we have used left invariance of $g$ is the first equality, and left invariance of $X$ and $Y$ in the second equality.
+		
+		Conversely, suppose $g(X,Y)$ is constant for all $X,Y \in \lie(G)$. Fix $\varphi, p \in G$, and let $v,w \in T_p G$. Let $X,Y \in \lie(G)$ be the unique left invariant vector fields such that $X_p = v$ and $Y_p = w$ \alert{(how do we know these exist?)}. Then
+		\begin{align*}
+			g_p(v,w) &= g_p(X_p, Y_p) = g_{\varphi p}(X_{\varphi p}, Y_{\varphi p}) 
+			\\
+			&=g_{\varphi p}\left(d(L_{\varphi})(X_p),d(L_{\varphi})(Y_p) \right)= 
+			g_{\varphi p}\left(d(L_{\varphi})(v),d(L_{\varphi})(w) \right),
+		\end{align*}
+		where we have used the fact that $g(X,Y)$ is constant in the second equality, and left invariance of $X$ and $Y$ in the third equality.
+	\end{proof}
+
+	
+
+	\subsection{Generalised Heisenberg Groups and Algebras}
+	Let $\mathfrak n$ be a two-step nilpotent Lie algebra equipped with inner product $\langle\cdot , \cdot \rangle$. Let $\mathfrak z$ be the center of $\mathfrak n$, and denote $\mathfrak v := \mathfrak n^\perp$. For each $Z \in \mathfrak z$, we define $J_Z: \mathfrak v \rightarrow \mathfrak v$ implicitly by 
+	$$\langle J_Z X,Y \rangle = \langle [X,Y],Z \rangle \quad \forall X,Y \in \mathfrak v.$$
+
+	\begin{definition}[\cite{eberlein}]
+		Let $\mathfrak n$ be a two-step nilpotent Lie algebra equipped with inner product $\langle\cdot , \cdot \rangle$. We say that $(\mathfrak n, \langle\cdot , \cdot \rangle)$ is a \emph{$H$-type metric Lie algebra} if 
+		$$J_Z^2 = -\langle Z,Z \rangle \text{Id}_{\mathfrak v}.$$
+		The simply connected Lie group corresponding to $(\mathfrak n, [\cdot,\cdot])$ equipped with the left invariant metric induced by $\langle \cdot,\cdot \rangle$ is denoted $N$, and is called a \emph{$H$-type Lie group}.
+	\end{definition}
+	
+	\subsection{Heisenberg Groups and Algebras}
+	\begin{definition}
+		The \emph{Heisenberg group of dimension $2n+1$,} denoted $H_{2n+1}$, is constructed in the following way: as a smooth manifold, $H_{2n+1}$ is $\R^{2n+1}$ with the standard smooth structure. We write elements in $H_{2n+1}$ in the form $(\mathbf a, \mathbf b, c)$, where $\mathbf a, \mathbf b \in \R^n$ and $c \in \R$. The group operation is defined by
+		$$(\mathbf a, \mathbf b,c ) (\mathbf x,\mathbf y,z) := (\mathbf a + \mathbf x, \mathbf b + \mathbf y, c + z + \mathbf a \cdot \mathbf y),$$
+		where $\cdot$ denotes dot product. 
+		
+		Alternatively, we can think of elements in $H_{2n+1}$ as $(n+2)$ by $(n+2)$ real matrices of the form 
+		$$\begin{pmatrix}
+			1 & \mathbf a & c \\
+			0 & \text{I}_n & \mathbf b \\
+			0 & 0 & 1
+		\end{pmatrix},$$
+		where $\mathbf a$ is an $n$-row vector, $\mathbf b$ is an $n$-column vector, and $\text{I}_n$ is the identity matrix.
+		From this perspective, the group operation is matrix multiplication.
+	\end{definition}
+	
+	
+	\begin{definition}
+		The \emph{Heisenberg algebra of dimension $2n+1$}, denoted $\mathfrak h_{2n+1}$, is constructed in the following way: as a vector space, $\mathfrak h_{2n+1}$ is $\R^{2n+1}$. Let $X_1,\ldots, X_n,Y_1,\ldots,Y_n,Z$ be a basis for $\mathfrak h_{2n+1}$. We then define a Lie bracket on $\mathfrak h_{2n+1}$ via the following commutator relations:
+		$$[X_i, Y_j] = \delta_{ij}Z, \;\; [X_i, Z] =0, \;\; [Y_j,Z] = 0.$$
+		
+		Alternatively, we can think of elements of $\mathfrak h_{2n+1}$ as $(n+2)$ by $(n+2)$ real matrices of the form 
+		$$\begin{pmatrix}
+			0 & \mathbf a & c \\
+			0 & 0_n & \mathbf b \\
+			0 & 0 & 0
+		\end{pmatrix}.$$
+		From this perspective, the Lie bracket is given by $[A,B] = AB-BA$.
+	\end{definition}
+	
+	\begin{proposition}
+		The Lie algebra of the Heisenberg group $H_{2n+1}$ is $\mathfrak h_{2n+1}$.
+	\end{proposition}
+	\begin{proof}
+		We argue the case $n = 1$. As a smooth manifold, the Heisenberg group $H_3$ is Euclidean space $\R^3$. Let $x,y,z:\R^3 \rightarrow \R$ be the standard coordinates, and let $\partial_x,\partial_y, \partial_z$ be the standard global frame. Let $e$ denote the identity $(0,0,0)$.
+		Given $g,p \in H_3$, we find that the differential $d(L_g)_p:T_p\R^3 \rightarrow T_{gp} \R^3$ is given by 
+		$$\begin{pmatrix}
+			u \\ v \\ w
+		\end{pmatrix} \mapsto 
+		\begin{pmatrix}
+			u \\ v \\x(g) v + w
+		\end{pmatrix}$$
+		with respect the standard bases for $T_p \R^3$ and $T_{gp} \R^3$, respectively.
+		Given $X  \in \lie(G)$, we find 
+		$$X = X^1(e) \partial_x + X^2(e) \partial_y + (x X^2(e) + X^3(e))\partial_z.$$
+		It follows that, given $X,Y \in \lie(G)$, the commutator is given by 
+		$$[X,Y] = (X^1(e) Y^2(e) - X^2(e) Y^1(e)) \partial_z.$$
+		Now, set 
+		$A := \partial_x$, $B := \partial_y + x \partial_z$,  and $C:= \partial_z$, which form a basis for $\lie(H_3)$.
+		We then find $[A,B] = C$, and $[A,C] = [B,C] = 0$. This shows that $\lie(H_3)$ is isomorphic to $\mathfrak h_3$ as Lie algebras.
+	\end{proof}
+
+
+\section{Damek-Ricci Spaces}
+	\subsection{Definition and Properties}
+	\begin{definition}[{\cite[Section 4.1.1]{tricerri}}]
+		Let $\mathfrak n$ be a $H$-type metric Lie algebra, and let $\langle \cdot, \cdot \rangle_{\mathfrak n}$ and $[\cdot, \cdot]_{\mathfrak n}$ denote the inner product and Lie bracket on $\mathfrak n$, respectively. Let $\mathfrak a$ be a one-dimensional real vector space, and let $A \in \mathfrak a$ be non-zero. Define $\mathfrak s := \mathfrak n \oplus \mathfrak a$. Note that any element in $\mathfrak s$ can be written uniquely as 
+		$$V + Y + sA,$$
+		where $V \in \mathfrak v$, $Y \in \mathfrak z$, and $s \in \R$.
+		We define the inner product and Lie bracket on $\mathfrak s$ by 
+		\begin{align*}
+			&\langle U + X + rA, V + Y + sA\rangle_{\mathfrak s} := \langle  U + X, V + Y\rangle_{\mathfrak n} + rs, \\
+			&[U + X + rA, V + Y + sA]_{\mathfrak s} := [U,V]_{\mathfrak n} + \frac12 rV - \frac12 sU + rY - sX. 
+		\end{align*}
+		(It is straightforward to check that the definitions above define an inner product and Lie bracket, respectively.)
+		The simply connected Lie group corresponding to $(\mathfrak s, [\cdot,\cdot]_{\mathfrak s})$ equipped with the  left invariant metric induced by $\langle\cdot ,\cdot \rangle_{\mathfrak s}$ is denoted $S$, and is called a \emph{Damek-Ricci space.}
+	\end{definition}
+	
+
+	\begin{proposition}[{\cite[Section 4.1.3]{tricerri}}]
+		As Lie algebras, we have $\mathfrak s = \mathfrak n \rtimes_f \mathfrak a$, where 
+		$$f: \mathfrak a \rightarrow \der(\mathfrak n), \quad f(sA)(V+Y) := \frac12 s V + sY.$$
+	\end{proposition}
+	\begin{proof}
+		First, each $f(sA):\mathfrak n \rightarrow \mathfrak n$ can be shown to be a derivation. Moreover, the map $f$ can be shown the be a Lie algebra homomorphism. Thus, the semi-direct product $\mathfrak n \rtimes_f \mathfrak a$ makes sense.
+		
+		Observe $\mathfrak s$ and $\mathfrak n \rtimes_f \mathfrak a$ are the same as vector spaces, so it remains to check that their Lie brackets agree.
+		Indeed, we find
+		\begin{align*}
+			&[U+X+rA, V + Y+sA]_{ \mathfrak n \rtimes_f \mathfrak a} \\
+			&= [U+X,V+Y]_{\mathfrak n} + f(rA)(V+Y) - f(sA)(U+X) + [rA,sA]_{\mathfrak a} 
+			\\
+			&= [U,V]_{\mathfrak n} + \frac12 rV - \frac12 sU + rY - sX \\
+			&= [U + X + rA, V + Y + sA]_{\mathfrak s}.
+		\end{align*}
+		This completes the proof.
+	\end{proof}
+	
+	
+	\begin{proposition}[{\cite[Section 4.1.3]{tricerri}}]
+		We have $S = N \times_F \R$, where 
+		$$F:\R \rightarrow \aut(N), \quad F(s)(\exp_{\mathfrak n}(V + Y)) := \exp_{\mathfrak n}(e^{s/2} V + e^s Y).$$
+	\end{proposition}
+	\begin{proof}
+		\alert{Prove this.}
+	\end{proof}
+	
+	\begin{proposition}[{\cite[Section 4.1.3]{tricerri}}]
+		The group multiplication on $S = N \times_F \R$ is given by 
+		\begin{align*}
+			&(\exp_{\mathfrak n}(U+X),r) \cdot (\exp_{\mathfrak n}(V + Y),s)  \\
+			&= \left(
+			\exp_{\mathfrak n}\left(U + e^{r/2} V + X + e^r Y + \frac12 e^{r/2} [U,V]\right), r + s \right).
+		\end{align*}
+	\end{proposition}
+	\begin{proof}
+		\alert{Prove this.}
+	\end{proof}
+	
+	\subsection{Levi-Civita Connection}
+	\begin{proposition}[{\cite[Section 4.1.6]{tricerri}}]
+		\label{connection}
+		The Levi-Civita connection $\nabla$ for $(S,g)$ is given by
+		\begin{align*}
+			&\nabla_{V+ Y + sA}(U + X + rA)  \\
+			& = - \frac12 J_X V - \frac12 J_Y U - \frac12 r V - \frac12 [U,V] - rY + \frac12 \langle U, V \rangle A + \langle X, Y \rangle A.
+		\end{align*}
+	\end{proposition}
+	\begin{proof}
+		\alert{Prove this.}
+	\end{proof}
+	\subsection{Global Coordinates}
+	We put global coordinates on $S$ in the following way: Let $$V_1,\ldots,V_n, Y_1,\ldots,Y_m,A$$ be an orthonormal basis for $\mathfrak s$, where $V_1,\ldots, V_n \in \mathfrak v$ and $Y_1,\ldots,Y_m \in \mathfrak z$. Let $\widetilde{v_1},\ldots, {\widetilde v_n},\widetilde{y_1},\ldots, \widetilde{y_m}, \widetilde\lambda$ be the corresponding coordinate functions. We know that $\exp_{\mathfrak n} \times \exp_{\mathfrak a}: \mathfrak s \rightarrow S$ is a diffeomorphism \why. Thus, we can put coordinate functions $v_1,\ldots,v_n,y_1,\ldots,y_m,\lambda:S \rightarrow \R$ on $S$ via
+	$$(v_1,\ldots,v_n,y_1,\ldots,y_m) := (\widetilde{v_1},\ldots, {\widetilde v_n},\widetilde{y_1},\ldots, \widetilde{y_m}, \widetilde\lambda) \circ (\exp_{\mathfrak n} \times \exp_{\mathfrak a})^{-1}.$$ 
+
+	\begin{proposition}[{\cite[Section 4.1.5]{tricerri}}]
+		\label{coordinates}
+		We have 
+		\begin{align*}
+			&V_i = e^{\lambda/2} \frac{\partial}{\partial v_i} - \frac12 e^{\lambda/2} \sum_{j=1}^n \sum_{k=1}^m A^k_{ij} v_j \frac{\partial}{\partial y_k}, \qquad \text{where} \quad A_{ij}^k := \langle [V_i, V_j], Y_k\rangle,\\
+			& Y_i = e^\lambda \frac{\partial}{\partial y_i} \\
+			& A = \frac{\partial}{\partial \lambda}.
+		\end{align*}
+	\end{proposition}
+	\begin{proof}
+		\alert{Prove this.}
+	\end{proof}
+
+	\subsection{Harmonicity}
+	\begin{proposition}[{\cite[Section 4.4]{tricerri}}]
+		Let $v_1,\ldots,v_n,y_1,\ldots,y_m,\lambda:S \rightarrow \R$ be the coordinate functions on $S$. The Laplacian $\Delta$ on $S$ is given by 
+		\begin{align*}
+			\Delta &= e^\lambda \sum_{i=1}^n \frac{\partial^2}{\partial v_i^2} + e^{2\lambda } \sum_{i=1}^m\frac{\partial^2}{\partial y_i^2}  +\left(  \frac14 e^\lambda \sum_{i=1}^n v_i^2\right) \sum_{i=1}^m \frac{\partial^2}{\partial y_i^2} + \frac{\partial^2}{\partial \lambda^2} \\
+			& - \left(m+ \frac n2 \right) \frac{\partial}{\partial \lambda}  +  e^\lambda \sum_{i=1}^n \sum_{j=1}^n \sum_{k=1}^m  A^k_{ij}v_i \frac{\partial}{\partial v_j} \frac{\partial }{\partial y_k}.
+		\end{align*}
+		\alert{The textbook has a factor of 1/2 in the last term. Does this affect anything?}
+	\end{proposition}
+	\begin{proof}
+		\alert{Prove this.}
+	\end{proof}
+
+
+
+	\begin{proposition}[{\cite[Section 4.4]{tricerri}}]
+		The smooth map $\Omega_e := \frac12 (d_e)^2:S \rightarrow \R$ can be written as 
+		$$\Omega_e = \Phi \circ \Psi,$$
+		where $\Phi$ and $\Psi$ are given by 
+		\begin{align*}
+			&\Phi:[4, \infty) \mapsto [0,\infty), \qquad t \mapsto 2 \arctanh^2 \left( \sqrt{1 - \frac4t}\right) \\
+			&\Psi:S \rightarrow [4,\infty), \qquad \Psi := e^{-\lambda}\left( 1 + \frac14  \sum_{i=1}^n v_i^2 + e^\lambda\right)^2 + e^{-\lambda}\sum_{i=1}^m y_i^2.
+		\end{align*}
+	\end{proposition}
+	\begin{proof}
+		\alert{Prove this.}
+	\end{proof}
+
+	\begin{proposition}[{\cite[Section 4.4]{tricerri}}]
+		The map $\Omega_e: S \rightarrow \R$ is isoparametric.
+	\end{proposition}
+	\begin{proof}
+		\alert{Prove this.}
+	\end{proof}
+
+	\begin{proposition}[{\cite[Section 4.4]{tricerri}}]
+		Every Damek-Ricci space is a harmonic space.
+	\end{proposition}
+	\begin{proof}
+		\alert{Prove this.}
+	\end{proof}
+	
+
+	\bibliographystyle{plain}
+	\bibliography{references}
+
+
+	
+
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
