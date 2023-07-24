@@ -1,0 +1,1343 @@
+%BEGIN_FOLD
+\documentclass{amsart}
+
+\makeatletter
+\def\@tocline#1#2#3#4#5#6#7{\relax
+	\ifnum #1>\c@tocdepth % then omit
+	\else
+	\par \addpenalty\@secpenalty\addvspace{#2}%
+	\begingroup \hyphenpenalty\@M
+	\@ifempty{#4}{%
+		\@tempdima\csname r@tocindent\number#1\endcsname\relax
+	}{%
+		\@tempdima#4\relax
+	}%
+	\parindent\z@ \leftskip#3\relax \advance\leftskip\@tempdima\relax
+	\rightskip\@pnumwidth plus4em \parfillskip-\@pnumwidth
+	#5\leavevmode\hskip-\@tempdima
+	\ifcase #1
+	\or\or \hskip 2em \or \hskip 2em \else \hskip 3em \fi%
+	#6\nobreak\relax
+	\hfill\hbox to\@pnumwidth{\@tocpagenum{#7}}\par% <---- \dotfill -> \hfill
+	\nobreak
+	\endgroup
+	\fi}
+\makeatother
+
+\RequirePackage{amssymb}
+\RequirePackage{amsmath}
+\RequirePackage{amsthm}
+\RequirePackage{enumerate}
+\RequirePackage{mathtools}
+\RequirePackage{tikz-cd}
+\RequirePackage[hidelinks,colorlinks=true,linkcolor=blue,allcolors=blue]{hyperref}
+
+
+
+\newcommand{\R}{\mathbb R}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\C}{\mathbb C}
+
+\newcommand{\id}{\text{\normalfont Id}}
+\newcommand{\End}{\text{\normalfont End}}
+\newcommand{\iso}{\text{\normalfont Iso}}
+\newcommand{\lie}{\text{\normalfont Lie}}
+\newcommand{\der}{\text{\normalfont der}}
+\newcommand{\aut}{\text{\normalfont Aut}}
+\newcommand{\arctanh}{\text{\normalfont Arctanh}}
+\newcommand{\grad}{\text{\normalfont grad}}
+\newcommand{\hess}{\text{\normalfont Hess}}
+\newcommand{\tr}{\text{\normalfont tr}}
+\newcommand{\GL}{\text{\normalfont GL}}
+\newcommand{\Ad}{\text{\normalfont Ad}}
+\newcommand{\ad}{\text{\normalfont ad}}
+\newcommand{\gl}{\mathfrak{gl}}
+
+\newcommand{\s}{\mathfrak s}
+\renewcommand{\v}{\mathfrak v}
+\newcommand{\z}{\mathfrak z}
+\newcommand{\n}{\mathfrak n}
+\renewcommand{\a}{\mathfrak a}
+\newcommand{\h}{\mathfrak h}
+\newcommand{\g}{\mathfrak g}
+\newcommand{\X}{\mathfrak X}
+
+\newcommand{\alert}[1]{\color{red}#1\color{black}}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{example}[theorem]{Example}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\allowdisplaybreaks
+
+\newcommand\undermat[2]{% http://tex.stackexchange.com/a/102468/5764
+	\makebox[0pt][l]{$\smash{\underbrace{\phantom{%
+					\begin{matrix}#2\end{matrix}}}_{\text{$#1$}}}$}#2}
+%END_FOLD
+
+\title{Harmonicity of Damek-Ricci Spaces}
+\author{Joseph Kwong}
+
+\begin{document}
+	\maketitle
+	\begin{abstract}
+		We review some Lie theory and Riemannian geometry. We study Damek-Ricci spaces. We follow the proof of harmonicity of Damek-Ricci spaces from \cite{tricerri}.
+	\end{abstract}
+	\setcounter{tocdepth}{2}
+	\tableofcontents
+	
+	
+	\section{Introduction}
+	\subsection{Organisation of the text}
+	\subsection{Notation}
+	\subsection{Acknowledgements}
+	
+	
+	
+	\section{Some Lie theory} 
+	
+	\subsection{Definitions}
+	Recall that a \emph{Lie group} is a group $G$ endowed with a smooth manifold structure such that multiplication and inversion are smooth.
+	On the other hand, a \emph{Lie algebra} is a real vector space $\g$ equipped with a bilinear form $[\cdot,\cdot]: \g \times \g \rightarrow \g$ which satisfies $[X,X] = 0$ and the Jacobi identity:
+	$$[X,[Y,Z]] + [Z,[X,Y]] + [Y,[Z,X]] = 0.$$
+	
+	\subsection{The Lie algebra of a Lie group}
+	Let $G$ is a Lie group. We say that a (not necessarily smooth) vector field $X$ on $G$  is \emph{left-invariant} if $X_{\varphi p} = dL_\varphi(X_p)$ for every $\varphi,p \in G$. We denote the collection of all left-invariant vector fields by $\lie(G)$. 
+	
+	The following lemma shows that all left-invariant vector fields are smooth.
+	\begin{lemma}
+		\label{smoothness of left}
+		Let $X:G \rightarrow TG$ be a (not necessarily smooth) vector field on $G$. Suppose $X$ is left-invariant. Then $X$ is smooth.
+	\end{lemma}
+	\begin{proof}
+		By left-invariance, we know that $X_p = dL_p(X_e)$ for any $p \in G$, so $X$ is nothing more than the map $p \mapsto dL_p(X_e)$. Because the zero vector field is smooth, we know that the map $G \rightarrow TG \times TG$, $p \mapsto ((p,0), (e,X_e))$ is smooth.  Since multiplication $m$ is smooth, we know that the differential $dm:TG \times TG \rightarrow TG$ is also smooth. Recall that $dm$ is given by 
+		$dm((p,v),(q,w)) = dR_q(v) + dL_p(w).$
+		Thus, we can write $X$ as a composition of smooth maps:
+		$$\begin{tikzcd}
+			X:G \arrow{rrrr}{p \mapsto ((p,0), (e,X_e))} &&&& TG \times TG \arrow{r}{dm}& TG.
+		\end{tikzcd}$$
+		This completes the proof.
+	\end{proof}
+	\begin{proposition}
+		The collection of left-invariant vector fields $\lie(G)$ forms a Lie algebra when equipped with the commutator bracket $[X,Y]f := X(Yf) - Y(Xf)$. 
+	\end{proposition}
+	\begin{proof}
+		Let us show that $\lie(G)$ is a real vector subspace of $\mathfrak X(G)$.  Fix $X,Y \in \lie(G)$ and $\lambda \in \R$. We seek to show that $\lambda X + Y$ is a left-invariant vector field. Indeed, given $\varphi, p \in G$, we find $\lambda X_{\varphi p} + Y_{\varphi p} = \lambda dL_\varphi (X_p) + dL_\varphi(Y_p) = dL_{\varphi}(\lambda X_p + Y_p).$
+		
+		Next, let us check that the commutator bracket is closed under left-invariant vector fields. Fix $X,Y \in \lie(G)$. Fix $\varphi,p \in G$ and $f \in C^\infty(G)$. Then 
+		\begin{align*}
+			[X,Y]_{\varphi p}f &= X_{\varphi p}(Yf) - Y_{\varphi p}(Xf) = dL_\varphi(X_p)(Yf) - dL_\varphi(Y_p) (Xf) \\
+			&= X_p (Yf \circ L_\varphi) - Y_p (Xf \circ L_\varphi) = X_p(Y(f \circ L_\varphi)) - Y_p (X(f \circ L_\varphi)) \\
+	 		&= [X,Y]_p (f \circ L_\varphi) = dL_{\varphi}([X,Y]_p)f,
+		\end{align*}
+		so $[X,Y]$ is also left-invariant.
+		
+		Finally, it is straightforward to check that $[\cdot,\cdot]:\lie(G) \times \lie(G) \rightarrow \lie(G)$ is a bilinear map satisfiying alternativity and the Jacobi identity. 
+	\end{proof}
+	
+	\begin{proposition}
+		The map $\lie(G) \rightarrow T_e(G)$ given by $X \mapsto X_e$ is a vector space isomorphism.
+	\end{proposition}
+	\begin{proof}
+		Linearity is clear. For injectivity, suppose $X \in \lie(G)$, and $X_e = 0$. Then $X_p = dL_p(X_e) = 0$ for any $p \in G$. For surjectivity, suppose $v \in T_e G$. Define the vector field  $v^L:G \rightarrow TG$ by $v^L|_p := dL_p(v)$. It is clear that $V^L|_e = v$, so it remains to check that $v^L$ is left-invariant. Given $\varphi,p \in G$, we find 
+		$v^L|_{\varphi p} = dL_{\varphi p}(v) = dL_{\varphi}(dL_p(v)) = dL_\varphi(v^L|_p).$
+	\end{proof}
+	
+	\subsection{Induced Lie algebra homomorphisms}
+	Let $G$ and $H$ be Lie groups, and let $F:G \rightarrow H$ be a Lie group homomorphism.
+	
+	Recall that vector fields $X$ on $G$ and $Y$ on $H$ are \emph{$F$-related} if $Y_{F(p)} = dF(X_p)$ for all $p \in G$.
+	\begin{proposition}
+		\label{uniqueness of induced}
+		Let $X \in \lie(G)$. There exists a unique left-invariant vector field $F_*X \in \lie(H)$ which is $F$-related to $X$.
+	\end{proposition}
+	\begin{proof}
+		For existence, define $F_*X := dF(X_e)^L$, which we know belongs to $\lie(H)$. It remains to check that $F_*X$ is $F$-related to $X$. Fix $\varphi,p \in G$. Then $(F \circ L_\varphi)(p) = F(\varphi p) = F(\varphi) F(p) = (L_{F(\varphi)} \circ F)(p)$, so taking the differential gives $dF \circ dL_\varphi = dL_{F(\varphi)} \circ dF$. Thus, for any $p \in G$, 
+		$dF(X_p) = dF(dL_p(X_e)) = dL_{F(p)}(dF(X_e)) = F_*X|_{F(p)},$
+		 as desired.
+		 
+		 For uniqueness, suppose $Y \in \lie(H)$ is also $F$-related to $X$. Then 
+		 $Y_p = dL_p(Y_e) = dL_p(dF(X_e)) = F_* X|_p, $
+		 so $Y= F_* X$. 
+	\end{proof}
+	
+	\begin{proposition}
+		The map $F_*:\lie(G) \rightarrow \lie(H)$ given by $X \mapsto F_* X$ is a Lie algebra homomorphism.
+	\end{proposition}
+	\begin{proof}
+		Linearity follows because $F_*$ is the composition linear maps:
+		$$\begin{tikzcd}
+			F_*: \lie(G) \arrow{rr}{X \mapsto X_e}&& T_eG \arrow{r}{dF}& T_e H \arrow{rr}{v \mapsto v^L}&& \lie(H).
+		\end{tikzcd}$$
+		Now, suppose $X,Y \in \lie(G)$. Since $F_*X$ is $F$-related to $X$ and $F_*Y$ is $F$-related to $Y$, a straightforward computation shows that $[F_*X,F_* Y]$ is $F$-related to $[X,Y]$. Uniqueness in Proposition \ref{uniqueness of induced} shows $[F_*X,F_* Y] = F_*[X,Y]$, so $F_*$ is a Lie algebra homomorphism.
+	\end{proof}
+
+	The following proposition shows that isomorphic Lie groups have isomorphic Lie algebras.
+	\begin{proposition}
+		Suppose $F:G \rightarrow H$ is a Lie group isomorphism. Then $F_*:\lie(G) \rightarrow \lie(H)$ is a Lie algebra isomorphism.
+	\end{proposition}
+	\begin{proof}
+		It is straightforward to check that $(F^{-1})_* \circ F_*$ and  $F_* \circ (F^{-1})_*$ are identities on $\lie(G)$ and $\lie(H)$, respectively.
+	\end{proof}
+
+	\subsection{One-parameter subgroups and the Lie exponential map}
+	Let $G$ be a Lie group. We define the  \emph{Lie exponential map} $\exp:\lie(G)\rightarrow G$ as follows. For every $X \in \lie(G)$, the \emph{one-parameter subgroup generated by $X$} is the unique integral curve $\gamma:\R \rightarrow G$ of $X$ starting at the identity $e \in G$. We then set $\exp(X) := \gamma(1)$.
+	
+	
+	The following proposition shows that one-parameter subgroups are precisely Lie group homomorphisms $\R \rightarrow G$.
+	\begin{proposition}
+		\label{equivalence one parameter}
+		Let $\gamma:\R \rightarrow G$ be a smooth curve. Then $\gamma$ is the one parameter subgroup generated of $X$ if and only if $\gamma$ is a Lie group homomorphism satisfying $\gamma'(0) = X_e$.
+	\end{proposition}
+	\begin{proof}
+		Suppose $\gamma$ is one-parameter subgroup generated by $X$. By definition, we know that  $\gamma'(0) = X_e$. Fix $s \in \R$. Then $t \mapsto (L_{\gamma(s)} \circ \gamma)(t) = \gamma(s) \gamma(t)$ is an integral curve of $X$ starting at $\gamma(s)$. On the other hand, $t \mapsto \gamma(s + t)$ is also an integral curve of $X$ starting at $\gamma(s)$. Uniqueness of integral curves shows that $\gamma(s+t) = \gamma(s) \gamma(t)$, so $\gamma$ is a Lie group homomorphism.
+		
+		Conversely, suppose $\gamma:\R \rightarrow G$ is a Lie group homomorphism with $\gamma'(0) = X_e$. Fix $t \in \R$. Then $X_{\gamma(t)} = dL_{\gamma(t)}(X_e) = dL_{\gamma(t)}(\gamma'(0)) = dL_{\gamma(t)}(d\gamma(d/dt|_0)) = d\gamma(dL_{\gamma(t)}(d/dt|_0)) = \gamma'(t)$, so $\gamma$ is an integral curve of $X$.
+	\end{proof}
+	
+	The following proposition shows that one-parameter subgroups can be written in terms of the exponential map.
+	\begin{proposition}
+		Let $X \in \lie(G)$, and let $\gamma:\R \rightarrow G$ be the one-parameter subgroup generated by $X$. Then 
+		$\gamma(s) = \exp(sX)$ for all $s \in \R$.
+	\end{proposition}
+	\begin{proof}
+		Fix $s \in \R$. The map $t \mapsto \gamma(st)$ is the integral curve of $sX$ starting at the identity, so $\exp(sX) = \gamma(s)$.
+	\end{proof}
+	
+	\begin{remark}
+		Let $X \in \lie(G)$. Let $\gamma:\R \rightarrow G$ be the one-parameter subgroup generated by $X$. Then 
+		\begin{align*}
+			\exp((s+t)X) &= \gamma(s+t) = \gamma(s) \gamma(t) =  \exp(sX) \exp(tX), \\
+			\exp(X)^{-1} &= \gamma(1)^{-1} = \gamma(-1) = \exp(-X).
+		\end{align*}
+	\end{remark}
+
+
+	Let $H$ be another Lie group, and let $F:G \rightarrow H$ be a Lie group homomorphism. Let $\g$ and $\h$ denote the Lie algebras of $G$ and $H$, respectively.
+	\begin{proposition}
+		\label{natural}
+		Then the following diagram commutes:
+		$$\begin{tikzcd}
+			G \arrow{r}{F} & H \\
+			\g \arrow{r}{F_*} \arrow{u}{\exp_\g}& \h \arrow[swap]{u}{\exp_\h}. 
+		\end{tikzcd}$$
+	\end{proposition}
+	\begin{proof}
+		Let $X \in \g$, and let $\gamma:\R \rightarrow G$ be the one-parameter subgroup generated by $X$. It suffices to show that $F \circ \gamma: \R \rightarrow H$ is the one-parameter subgroup generated by $F_*X$. Indeed, $F \circ \gamma$ is a Lie group homomorphism which satisfies $(F \circ \gamma)'(0) = dF(X_e) = F_* X|_e$.
+	\end{proof}
+
+	\subsection{Lie subgroups and Lie subalgebras}
+	Let $G$ be a Lie group. An \emph{embedded Lie subgroup} is a subgroup $H$ of $G$ which is also an embedded submanifold of $G$.
+	
+	\begin{proposition}[Closed Subgroup Theorem]
+		Let $H$ be a subgroup of $G$ that is topologically closed. Then $H$ is an embedded Lie subgroup.
+	\end{proposition}
+
+	Let $\g$ be a Lie algebra. A \emph{Lie subalgebra of $\g$}  is a vector subspace $\h$ of $\g$ which is closed under the Lie bracket.
+
+	\begin{proposition}
+		Let $H$ be an embedded Lie subgroup of $G$, and let $\h$ and $\g$ denote the Lie algebras of $H$ and $G$, respectively. Then $\exp_\h = \exp_\g|_\h$, and 
+		$$\h= \Big\{X \in \g \; \Big| \;  \exp(tX) \in H \;\; \forall t \in \R\Big\}.$$
+	\end{proposition}
+	\begin{proof}
+		First, let us discuss what the proposition is saying. Let $\iota:H \rightarrow G$ be the inclusion map, which we know is a smooth embedding and a Lie group homomorphism. Thus, 
+		$$\begin{tikzcd}
+			\iota_*: \h \arrow{rr}{X \mapsto X_e} && T_e H \arrow{r}{d\iota_e} & T_e G \arrow{rr}{v\mapsto v^L}  &&\g
+		\end{tikzcd}$$
+		is an injective Lie algebra homomorphism. We identify $\h$ with its image $\iota_*(\h)$, which is a Lie subalgebra of $\g$. Thus, what we actually want to show is 
+		\begin{align*}
+			\exp_\h &= \exp_\g \circ  \iota_*: \h \rightarrow H, \quad
+			\iota_*(\h)= \Big\{X \in \g \; \Big| \;  \exp_\g(tX) \in H \;\; \forall t \in \R\Big\}.
+		\end{align*}
+	
+		The first equality is an immediate consequence of from Proposition \ref{natural}. Next, suppose $X \in \h$. Then $\exp_\g(t \iota_* X) = \exp_\h(tX)$ belongs to $H$ for any $t \in \R$. Conversely, suppose $X \in \g$ and $\exp_\g(tX) \in H$ for every $t \in \R$. Then the one-parameter subgroup generated by $X$ is given by $\iota \circ \gamma$ for some smooth curve $\gamma:\R \rightarrow H$. Then 
+		$\iota_* \gamma'(0)^L = X$, where  $\gamma'(0)^L \in \h$.
+	\end{proof}
+
+
+	\subsection{Automorphisms and derivations}
+	Let $\g$ be an $n$-dimensional real Lie algebra. Since $\g$ is also a vector space, we have $\GL(\g)$, the \emph{general linear group of $\g$}, which consists of all linear automorphisms of $\g$. On the other hand, the \emph{automorphism group of $\g$}, denoted by $\aut(\g)$, consists of all \emph{Lie algebra} automorphisms of $\g$.
+	\begin{proposition}
+		The automorphism group $\aut(\g)$ is an embedded Lie subgroup of $\GL(\g)$.
+	\end{proposition}
+	\begin{proof}
+		First, $\aut(\g)$ is a subgroup of $\GL(\g)$ because compositions and inversions of Lie algebra automorphisms remain Lie algebra automorphisms.
+		
+		Thus, by the Closed Subgroup Theorem, it remains to check that $\aut(\g)$ is topologically closed in $\GL(\g)$. Let $E_1,\ldots,E_n$ be a basis for $\g$. For any $A \in \GL(\g)$, let the real numbers $A_i^j$ be defined by $A E_i = A_i^j E_j$. Furthermore, define the real numbers $c_{ij}^k$ by $[E_i, E_j] = c_{ij}^k E_k$. Fix $A \in \GL(\g)$. Observe that $A$ belongs to $\aut(\g)$ if and only if 
+		$$c_{ij}^k A_k^r E_r = A[E_i, E_j] = [A E_i, AE_j] = A_i^k A_j^l c_{kl}^r E_r,$$
+		so we can write 
+		$$\aut(\g) = \Big\{ A \in \GL(\g) \; \Big| \; c_{ij}^k A_k^r - A_i^k A_j^l c_{kl}^r = 0 ,\;\; \forall i,j,r\Big\}.$$
+		This shows that $\aut(\g)$ is closed.
+	\end{proof}
+	
+	A \emph{derivation} on $\g$ is a linear map $D:\g \rightarrow \g$ satisfying the Leibniz rule $D[X,Y] = [DX,Y] + [X,DY]$ for all $X,Y \in \g$. We denote the collection of all derivations on $\g$ by $\der(\g)$. Recall that $\gl(\g)$ is the Lie algebra consisting of all endomorphisms of $\g$ equipped with the commutator bracket $[A,B] := A \circ B - B \circ A$.
+	
+	\begin{proposition}
+		The collection $\der(\g)$ is a Lie subalgebra of $\gl(\g)$. 
+	\end{proposition}
+	\begin{proof}
+		First, it is straightforward to see that $\der(\g)$ is a vector subspace of $\gl(\g)$, so it remains to check that $\der(\g)$ is closed under the commutator bracket. Fix $A,B \in \der(\g)$ and $X,Y \in \g$. Then 
+		\begin{align*}
+			[A,B][X,Y] &= AB[X,Y] - BA[X,Y]  \\
+			&= A([BX,Y] + [X,BY]) - B([AX,Y] + [X,AY])  \\
+			&=[ABX,Y] + [BX,AY] + [AX,BY] + [X,ABY] \\
+			&\quad- [BAX,Y] - [AX,BY] - [BX,AY] - [X,BAY] \\
+			&= [[A,B]X,Y] + [X,[A,B]Y],
+		\end{align*}
+		so $[A,B]$ is also a derivation, as we wished.
+	\end{proof}
+	
+	
+
+
+
+	
+
+	\begin{proposition}
+		The Lie algebra of $\aut(\g)$ is $\der(\g)$.
+	\end{proposition}
+	\begin{proof}
+		Since $\aut(\g)$ is a Lie subgroup of $\GL(\g)$ and $\lie(GL(\g)) = \gl(\g)$, we can write 
+		$$\lie(\aut(\g)) = \Big\{T \in \gl(\g) \; \Big| \; \exp(tT) \in \aut(\g)\;\; \forall t \in \R\Big\}.$$
+		
+		First, suppose $T \in \lie(\aut(\g))$. Fix $X,Y \in \g$. Since each $\exp(tT)$ is a Lie algebra automorphism, we have 
+		\begin{equation}
+			\label{haha1}
+			\exp(tT)[X,Y] = [\exp(tT)X, \exp(tT)Y].
+		\end{equation}
+		Computing the derivative of the left-hand side of (\ref{haha1}) at zero gives 
+		\begin{equation*}
+			\frac{d}{dt}\bigg|_{t=0}\exp(tT)[X,Y]  = T[X,Y].
+		\end{equation*}
+		Observe that the right-hand side of (\ref{haha1}) can be written as a composition of smooth maps:
+		$$\begin{tikzcd}
+			\R \arrow{rrrrr}{t \mapsto (\exp(tT)X, \exp(tT)Y)}&&&&& \g \times \g  \arrow{r}{[\cdot,\cdot]}& \g.
+		\end{tikzcd}$$
+		Therefore, taking the derivative at zero gives
+		\begin{align*}
+			\frac{d}{dt}\bigg|_{t=0}[\exp(tT)X, \exp(tT)Y] = [TX,Y] + [X,TY].
+		\end{align*}
+		Therefore, $T[X,Y] = [TX,Y] + [X,TY]$, so $T$ belongs to $\der(\g)$, as we wished.
+		
+		Conversely, suppose $T \in \der(\g)$. We wish to show that $\exp(tX)$ belongs to $\aut(\g)$ for every $t \in \R$. Let $X,Y \in \g$. Define $\alpha,\beta: \R \rightarrow \GL(\g)$ by
+		$$\alpha(t) := \exp(tT)[X,Y], \qquad \beta(t) := [\exp(tT)X,\exp(tT)Y].$$
+		First, observe that $\alpha(0) = [X,Y] = \beta(0)$. Furthermore, taking derivatives yield 
+		\begin{align*}
+			\alpha'(t) &= T \exp(tT)[X,Y] = T \alpha(t), \\
+			\beta'(t) &= [T \exp(tT)X, \exp(tT)Y] + [ \exp(tT)X, T\exp(tT)Y] \\
+			&= T[\exp(tT)X,\exp(tT)Y] = T \beta(t),
+		\end{align*}
+		so $\alpha$ and $\beta$ are both solutions to the same ODE with the same initial condition. Uniqueness of linear ODEs implies $\alpha \equiv \beta$.
+	\end{proof}
+
+
+	\subsection{Adjoint Representations}
+	Let $G$ be a Lie group, and let $\g := \lie(G)$. We define the \emph{conjugation maps} $C_\varphi:G \rightarrow G$ by $C_\varphi(h) := \varphi h \varphi^{-1}$. Each $C_\varphi$ is a Lie group automorphism with inverse $C_{g^{-1}}$. For each $\varphi \in G$, we define $\Ad(\varphi) := (C_\varphi)_*:\g \rightarrow \g$, which is a Lie algebra automorphism.
+	
+	\begin{proposition}
+		The map $\Ad:G \rightarrow \aut(\g)$ given by $\varphi \mapsto \Ad(\varphi)$ is a Lie group homomorphism.
+	\end{proposition}
+	\begin{proof}
+		Observe that 
+		$$\Ad(\varphi_1 \varphi_2) = (C_{\varphi_1 \varphi_2})_* = (C_{\varphi_2})_* \circ (C_{\varphi_2})_* = \Ad(\varphi_1) \circ \Ad(\varphi_2),$$
+		so $\Ad$ is a group homomorphism. It remains to show that $\Ad$ is smooth. Fix a basis $\mathcal B := \{E_1,\ldots,E_n\}$ for $\g$, and let $\varepsilon^1,\ldots,\varepsilon^n$ denote the dual basis. The matrix representation of each $\Ad(\varphi)$ is given by 
+		$$[\Ad(\varphi)]_{\mathcal B}^{\mathcal B} = \begin{pmatrix}
+			 \varepsilon^1(\Ad(\varphi) E_1) & \cdots &  \varepsilon^1(\Ad(\varphi) E_n)\\
+			 \vdots & \ddots & \vdots \\
+			  \varepsilon^n(\Ad(\varphi) E_1) & \cdots &  \varepsilon^n(\Ad(\varphi) E_n)
+		\end{pmatrix},$$
+		so we are done if we show that each $\varphi \mapsto \varepsilon^j(\Ad(\varphi) E_i)$ is smooth. Since $\varepsilon^j$ are smooth, it suffices to show that each $\varphi \mapsto \Ad(\varphi) E_i$ is smooth. Define $C:G \times G \rightarrow G$ by $C(\varphi,h) := \varphi h \varphi^{-1}$. Fix $i$. Given $\varphi \in G$, we have 
+		\begin{align*}
+			\Ad(\varphi) E_i &= (C_\varphi)_* E_i = \frac{d}{dt}\bigg|_{t=0}\exp(t (C_\varphi)_* E_i)= \frac{d}{dt}\bigg|_{t = 0}C_\varphi (\exp(tE_i)) \\&= 
+			\frac{d}{dt}\bigg|_{t = 0} C(\varphi, \exp(tE_i)) = dC((\varphi,0),(e,E_i)).
+		\end{align*}
+		The last expression can be written as a composition of smooth maps:
+		$$\begin{tikzcd}
+			G \arrow{rrrr}{\varphi \mapsto((\varphi,0),(e,E_i)) }&&&& TG \times TG \arrow{r}{dC}&TG.
+		\end{tikzcd}$$
+		Thus, $\varphi \mapsto \Ad(\varphi) E_i$ is smooth, as desired.
+	\end{proof}
+
+	Recall that the adjoint maps on $\g$ are defined as the following: for each $X \in \g$, we define $\ad(X):\g \rightarrow \g$ by $\ad(X)Y := [X,Y]$. Each $\ad(X)$ is a derivation on $\g$.
+	
+	\begin{proposition}
+		The map $\ad:\g \rightarrow \der(\g)$ given by $X \mapsto \ad(X)$ is a Lie algebra homomorphism.
+	\end{proposition}
+	\begin{proof}
+		Linearity follows because the Lie bracket is bilinear. It remains to show that $\ad$ preserves the Lie bracket. Suppose $X_1,X_2,Y \in \g$. Then 
+		\begin{align*}
+			&[\ad(X_1),\ad(X_2)]Y = \ad(X_1)\ad(X_2)Y - \ad(X_2) \ad(X_1) Y \\
+			&= [X_1,[X_2,Y]]  - [X_2, [X_1,Y]] = [[X_1,X_2],Y] = \ad([X_1,X_2])Y,
+		\end{align*}
+		as we wished.
+	\end{proof}
+
+	\begin{proposition}
+		The induced Lie algebra homomorphism of $\Ad: G \rightarrow \aut(\g)$ is $\Ad_* = \ad: \g \rightarrow \der(\g)$.
+	\end{proposition}
+	
+	
+	\subsection{Semidirect Products}
+	Let $H$ and $N$ be Lie groups, and let $\theta:H \times N \rightarrow N$ be a smooth left action by automorphisms (this means that each $\theta_h:N \rightarrow N$ is a Lie group automorphism). Define a binary operation $\cdot:(N \times H) \times (N \times H) \rightarrow N \times H$ by 
+	$$(n_1,h_1) \cdot (n_2,h_2) := (n_1 \theta_{h_1}(n_2), h_1h_2).$$
+	\begin{proposition}
+		The small manifold $N \times H$ equipped with the binary operation $\cdot$ forms a Lie group.
+	\end{proposition}
+	\begin{proof}
+		First, let us show that $(N \times H,\cdot)$ is indeed a group. For associativity, we find 
+		\begin{align*}
+			(n_1,h_1) \cdot((n_2,h_2) \cdot(n_3,h_3)) &= (n_1 \theta_{h_1}(n_2) \theta_{h_1h_2}(n_3),h_1h_2h_3) \\
+			&= ((n_1,h_1) \cdot (n_2,h_2)) \cdot (n_3,h_3).
+		\end{align*}
+		It is straightforward to check that $(e,e)$ is the identity element and the inverse of $(n,h)$ is $(\theta_{h^{-1}}(n^{-1}), h^{-1})$. 
+		
+		Finally, observe that multiplication and inversion are compositions of smooth maps. Thus, $(N \times H,\cdot)$ is a Lie group.
+	\end{proof}
+	
+	We say that $N \times H$ equipped with $\cdot$ is the \emph{semidirect product of $H$ acting on $N$ with respect to $\theta$}, and we denote the resulting group by $N \rtimes_\theta H$.
+	
+	
+	Next, let $\h$ and $\n$ be Lie algebras, and let $f:\h \rightarrow \der(\n)$ be a Lie algebra homomorphism. Consider the vector space $\n \oplus \h$. In what follows let us write elements of $\n \oplus \h$ as $U+X$, where $U \in \n$ and $X \in \h$. Define a binary operation $[\cdot, \cdot]: (\n \oplus \h) \times (\n \oplus \h) \rightarrow \n \oplus \h$ by 
+	$$[U+X,V+Y] := [U,V]_\n + f(X)V - f(Y)U + [X,Y]_\h.$$
+	\begin{proposition}
+		The vector space $\n \oplus \h$ equipped with the binary operation above forms a Lie algebra.
+	\end{proposition}
+	\begin{proof}
+		It suffices to show that $[\cdot,\cdot]$ is a Lie bracket. Bilinearity of $[\cdot,\cdot]$ follows from linearity of $f$ and each $f(Y)$. Alternativity is clear. The Jacobi identity can be verified by a long but straightforward computation.
+	\end{proof}
+	We say that $\n \oplus \h$ equipped with $[\cdot,\cdot]$ is the \emph{semidirect product of $\h$ and $\n$ with respect to $f$}, and denote the resulting Lie algebra by $\n \rtimes_f \h$.
+
+	Now, suppose $\lie(N)  = \n$ and $\lie(H) = \h$. Define $F:H \rightarrow \aut(N)$ by $F(h) := \theta_h$. 
+	\begin{proposition}
+		The map $\widetilde F:H \rightarrow \aut(\n)$ given by $h \mapsto \widetilde F(h) := (F(h))_{*}$ is a Lie algebra homomorphism.
+	\end{proposition}
+	\begin{proof}
+		To show that $\widetilde F$ is a group homomorphism, observe that 
+		$$\widetilde F(h_1 h_2) = (\theta_{h_1h_2})_* = (\theta_{h_1})_* \circ (\theta_{h_2})_* = \widetilde F(h_1) \circ \widetilde F(h_2).$$
+		It remains to show that $\widetilde F$ is smooth. Let $\mathcal B = \{E_1,\ldots,E_n\}$ be a basis for $\n$, and let $\varepsilon^1,\ldots,\varepsilon^n$ denote the dual basis. Then the matrix representation of each $\widetilde F(h)$ is  $(\varepsilon^j(\widetilde F(h) E_i))_{i,j=1}^n$. We are done if we show that each $h \mapsto \varepsilon^j(\widetilde F(h) E_i)$ is smooth. Since $\varepsilon^j:\n \rightarrow \R$ is smooth, it suffices to show that each $h \mapsto \widetilde F(h) E_i$ is smooth. We find 
+		$$\widetilde F(h) E_i = \frac{d}{dt}\bigg|_{t=0} \exp(t \widetilde F(h)E_i)
+		= \frac{d}{dt}\bigg|_{t=0} \theta(h, \exp(tE_i)) = d\theta((h,0), (e,E_i)).$$
+		The last expression can be written as a composition of smooth maps:
+		$$\begin{tikzcd}
+			H \arrow{rrrrr}{h \mapsto ((h,0), (e,E_i))} &&&&& TH \times TN \arrow{rr}{d\theta} && TN.
+		\end{tikzcd}$$
+		This completes the proof.
+	\end{proof}
+
+	Thus, we obtain a Lie \emph{algebra} homomorphism $\widetilde F_* \h \rightarrow \der(\n)$. This gives us a semidirect product of Lie algebras $\n\times_{\widetilde F_*} \h$. 
+	
+	\begin{proposition}
+		The Lie algebra of $N \rtimes_\theta H$ is $\n \rtimes_{\widetilde F_*} \h$.
+	\end{proposition}
+	\begin{proof}
+		Let $G := N \rtimes_\theta H$, and let $\g$ denote the Lie algebra of $G$. We wish to show $\g = \n \rtimes_{\widetilde F_*} \h$. Observe that the underlying vector spaces of both $\g$ and $\n \rtimes_{\widetilde F_*} \h$ are equal to $\n \oplus \h$, so it remains to show that their lie brackets agree. Since $N$ and $H$ are Lie subgroups of $G$, we know that $\n$ and $\h$ are Lie subalgebras of $\g$. Thus, 
+		$$[U+X,V+Y]_\g = [U,V]_\n + [X,V]_\g - [Y,U]_\g + [X,Y]_\h.$$
+		On the other hand, we know by definition
+		$$[U+X,V+Y]_{\n \rtimes_{\widetilde F_*} \h} = [U,V]_\n + \widetilde F_*(X)V - \widetilde F_* (Y) U + [X,Y]_\h,$$
+		so it remains to show that $\ad_\g(X)V = [X,V]_\g = \widetilde F_*(X)V$ whenever $X \in \h$ and $V \in \n$. Fix such $X$ and $V$, and  observe that 
+		\begin{align*}
+			\ad_\g(X) &=  \frac{d}{ds}\bigg|_{s=0} \exp_{\der(\g)}( \ad_g (sX))\\
+			 &= 
+			 \frac{d}{ds}\bigg|_{s=0}  \Ad_G(\exp_\g(sX)) = \frac{d}{ds}\bigg|_{s=0} (C_{\exp_\g(sX)})_*.
+		\end{align*}
+		Therefore, 
+		\begin{align*}
+			\ad_\g(X)V = \frac{d}{ds}\bigg|_{s=0}  (C_{\exp_\g(sX)})_*V 
+			&= \frac{d}{ds}\bigg|_{s=0} \frac{d}{dt}\bigg|_{t=0} \exp_\g(t(C_{\exp_\g(sX)})_*V)\\
+			&=   \frac{d}{ds}\bigg|_{s=0} \frac{d}{dt}\bigg|_{t=0}C_{\exp_\g(sX)}(\exp_\g(tV)).
+		\end{align*}
+		We find 
+		\begin{align*}
+			C_{\exp_\g(sX)}(\exp_\g(tV))& = \exp_\g(sX) \cdot \exp_\g(tV) \cdot \exp_\g(-sX) \\
+			&= (e, \exp_\h(sX)) \cdot (\exp_\n(tV),e) \cdot (e,\exp_\h(sX)) \\
+			&= (\theta_{\exp_\h(sX)}(\exp_\n(tV)),e) \\
+			&= (\exp_\n ( t \widetilde F(\exp_\h(sX))V),e)
+		\end{align*}
+		The second equality follows from uniqueness of one-parameter subgroups. Finally, we find 
+		\begin{align*}
+			\ad_\g(X)V &= \frac{d}{ds}\bigg|_{s=0} \frac{d}{dt}\bigg|_{t=0} (\exp_\n ( t \widetilde F(\exp_\h(sX))V),e) \\
+			&=  \frac{d}{ds} \bigg|_{s=0} \widetilde F(\exp_\h(sX))V \\
+			&= \frac{d}{ds} \bigg|_{s=0} \exp_{\der(\n)}(s \widetilde F_*(X))V = \widetilde F_*(X)V,
+		\end{align*}
+		as desired. This completes the proof.
+	\end{proof}
+
+	\subsection{Left-invariant metrics}
+	Let $G$ be a Lie group with Lie algebra $\g$. A Riemannian metric $g$ on $G$ is called \emph{left-invariant} of $(L_\varphi)^*g = g$ for every $\varphi \in G$. In other words, $g$ is left-invariant if and only if each $L_\varphi$ is an isometry of $(G,g)$. 
+	
+	\begin{proposition}
+		Let $g$ be a left-invariant metric on  $G$. Then $(G,g)$ is homogeneous.
+	\end{proposition}
+	\begin{proof}
+		Given $p,q \in G$, $L_{qp^{-1}}$ is an isometry taking $p$ to $q$.
+	\end{proof}
+	
+	\begin{proposition}
+		Let $g$ be a metric on $G$. Then $g$ is left-invariant if and only if $g(X,Y):G \rightarrow \R$ is constant for every $X,Y\in \g$.
+	\end{proposition}
+	\begin{proof}
+		Suppose $g$ is left-invariant, and $X,Y \in \g$. Then 
+		$$g_p(X_p, Y_p) = (L_{p^{-1}})^* g|_p (X_p,Y_p) = g_e(dL_{p^{-1}}(X_p),dL_{p^{-1}}(Y_p)) = g_e(X_e,Y_e),$$
+		so $g(X,Y)$ is constant. 
+		
+		Conversely, suppose $g(X,Y)$ is constant for any $X,Y \in \g$. Fix $\varphi,p \in G$ and $v,w \in T_p G$. Let $X$ and $Y$ be the unique left-invariant vector fields such that $X_p = v$ and $Y_p = w$. Then 
+		$$(L_\varphi)^* g|_p(v,w) =(L_\varphi)^* g|_p(X_p,Y_p) = g_{\varphi p}(X_{\varphi p}, Y_{\varphi p}) = g_p(X_p,Y_p) = g_p(v,w). $$
+		This shows that $g$ is left-invariant.
+	\end{proof}
+	
+	Let $g$ be a left-invariant metric on $G$. The previous proposition shows that $g(\cdot,\cdot):\g \times \g \rightarrow \R$ is a well-defined inner product.
+	\begin{proposition}
+		The map 
+		$$\Big\{\normalfont\text{Left invariant metrics}\Big\} \longrightarrow 
+		\Big\{\normalfont\text{Inner products on $\g$}\Big\},\qquad g \longmapsto g(\cdot,\cdot)$$
+		is a bijection.
+	\end{proposition}
+	\begin{proof}
+		For injectivity, suppose $g$ and $h$ are left-invariant metrics and $g(\cdot,\cdot) = h(\cdot,\cdot)$. Fix $p \in G$, and let $v,w \in T_p G$. Let $X$ and $Y$ be the unique vector fields such that $X_p = v$ and $Y_p = v$. Then $g_p(v,w) = g(X,Y) = h(X,Y) = h_p(v,w)$, so $g \equiv h$.
+		
+		For surjectivity, suppose $\langle\cdot,\cdot \rangle$ is an inner product on $\g$. Let $E_1,\ldots, E_n$ be an orthonormal basis for $(\g, \langle \cdot, \cdot \rangle)$. Any $X \in \mathfrak X(G)$ can be written as $X = X^i E_i$, where $X^i:G \rightarrow \R$ are smooth maps. Define 
+		$$g:\mathfrak X(G) \times \mathfrak X(G) \rightarrow C^\infty(G),\qquad g(X^i E_i, Y^i E_i) := \sum_{i=1}^n X^i Y^i.$$
+		It is clear that $g$ is bilinear in $C^\infty(G)$, so the Tensor Characterisation Lemma implies $g$ is a smooth tensor field. It is straightforward to check that each $g_p$ is an inner product. Finally, $g(E_i, E_j) = \delta_{ij}$, so $g(\cdot,\cdot) = \langle \cdot, \cdot \rangle$.
+	\end{proof}
+	
+	\subsection{Nilpotent Lie groups and Lie algebras}
+	A Lie algebra $\n$ is said to be \emph{nilpotent} if the series of decreasing ideals 
+	$$\n_0 = \n,\quad \n_1 = [\n,\n_0],\quad \n_2 = [\n,\n_1],\ldots$$
+	is eventually zero. We say that $\n$ is \emph{$k$-step nilpotent} if $\n_{k-1}\neq 0$ but $\n_k = 0$. We say that a Lie group $N$ is \emph{$k$-step nilpotent} if $\lie(N)$ is $k$-step nilpotent.
+	
+	\begin{proposition}
+		Suppose $N$ is a simply-connected nilpotent Lie group with Lie algebra $\n$. Then the exponential map $\exp: N \rightarrow \n$ is a diffeomorphism.
+	\end{proposition}
+	
+	\subsection{Heisenberg type Lie groups and Lie algebras}
+	Let $\n$ be a two-step nilpotent Lie algebra equipped with inner product $\langle \cdot ,\cdot \rangle_{\n}$. We denote the center of $\n$ by $\z$, and we denote the orthogonal complement of $\z$ with respect to $\langle \cdot ,\cdot \rangle_{\n}$ by $\v := \z^\perp$. Thus, we can write $\n = \v \oplus \z$.
+	Throughout the rest of this document, $U,V,W$ denote vectors in $\v$ and $X,Y,Z$ denote vectors in $\z$. Vectors in $\n$ are written in the form $V+Y$.  
+	
+	
+	For each $Z \in \z$, we implicitly define the linear map $J_Z: \v \rightarrow \v$ by the equation
+	$$\langle J_Z U,V \rangle_{\n} = \langle [U,V]_{\n},Z\rangle_{\n} \quad \forall U,V\in \v.$$
+	
+	
+	\begin{definition}
+		Let $\n$ be a two-step nilpotent Lie algebra equipped with inner product $\langle \cdot ,\cdot \rangle_{\n}$. We say that $(\n, \langle \cdot ,\cdot \rangle_{\n})$ is a \emph{Heisenberg type Lie algebra} if 
+		\begin{equation}
+			J_Z \circ J_Z = - \langle Z,Z \rangle_{\n} \id_{\v} \quad \forall Z \in \z. \label{J squared}
+		\end{equation}
+		The simply-connected Lie group $N$ corresponding to $\n$ equipped with the left-invariant metric induced by $\langle\cdot, \cdot \rangle_{\n}$ is called a \emph{Heisenberg type Lie group}.
+	\end{definition}
+	
+	
+	\begin{proposition}
+		Let $N$ be a Heisenberg type group with Lie algebra $\n$. Then the exponential map $\exp_{\n}:\n \rightarrow N$ is a diffeomorphism.
+	\end{proposition}
+
+	
+	Since $\exp_{\n}$ is a diffeomorphism, an arbitrary element of $N$ can be written in the form $\exp_{\n}(V+Y)$.
+	
+	\begin{proposition}
+		\label{multiplication in N}
+		Let $N$ be a Heisenberg type group with Lie algebra $\n$. The group multiplication on $N$ is given by 
+		$$\exp_\n(U+X) \cdot \exp_\n(V+Y) = \exp_\n\left(U+V + X + Y + \frac12 [U,V]\right).$$
+	\end{proposition}
+	\begin{proof}
+		This follows immediately from the Baker-Campbell-Hausdorff formula, and the fact that $\n$ is two-step nilpotent.
+	\end{proof}
+	
+	\begin{proposition}
+		\label{J equation}
+		Let $\n$ be a Heisenberg type Lie algebra. Then 
+		\begin{align}
+			J_X J_Y + J_Y J_X &= - 2 \langle X,Y \rangle \id_\v, \label{polarisation} \\
+			\langle J_X U , J_Y V \rangle + \langle J_X V, J_Y U \rangle &= 2 \langle U,V \rangle \langle X,Y \rangle. \label{idk}
+		\end{align}
+	\end{proposition}
+	\begin{proof}
+		By (\ref{J squared}), we find 
+		\begin{align*}
+			(J_{X+Y})^2 &= - \langle X+Y, X+Y \rangle \id_\v = -|X|^2 \id_\v - |Y|^2\id_\v - 2 \langle X,Y \rangle \id_\v \\
+			&= J_X^2 +J_Y^2 - 2 \langle X,Y \rangle \id_\v.
+		\end{align*}
+		On the other hand, 
+		\begin{align*}
+			(J_{X+Y})^2 &= (J_X + J_Y)(J_Y + J_X) = J_X^2 + J_Y^2 + J_X J_Y + J_Y J_X.
+		\end{align*}
+		Comparing the two computations gives (\ref{polarisation}).
+		
+		Next, let us show (\ref{idk}). First, by skew-symmetry of $J_X$, we find 
+		$$\langle J_X U,V \rangle + \langle J_X V, U \rangle = 0.$$
+		Replacing $V$ by $J_Y V$ gives 
+		\begin{equation}
+			\langle J_X U , J_Y V \rangle + \langle J_X J_Y V, U \rangle = 0. \label{what}
+		\end{equation}
+		By (\ref{polarisation}), we know that 
+		$$J_X J_Y V = - J_Y J_X V - 2 \langle X,Y \rangle V.$$
+		Substituting the above into (\ref{what}) yields
+		$$0 = \langle J_X U, J_Y V \rangle - \langle J_Y J_X V,U \rangle - 2\langle X,Y \rangle \langle U,V \rangle,$$
+		so rearranging and applying skew-symmetry of $J_Y$ to $\langle J_Y J_X V,U \rangle$ gives (\ref{idk}).
+	\end{proof}
+
+	\section{Some Riemannian geometry}
+	\subsection{Hypersurfaces}
+	Let $(M,g)$ be a Riemannian manifold. Let $S$ be an embedded hypersurface (this means that $S$ is an embedded submanifold of $M$ of codimension one). Let $X:S \rightarrow TM$ be a vector field. We say that $X$ is \emph{tangent to $S$} if $X_p$ belongs to $T_p S$ for all $p \in S$, and we say that $X$ is \emph{normal to $S$} if $X_p$ is orthogonal to $T_p S$ for all $p \in S$.
+	
+	
+	
+	Let $N:S \rightarrow TM$ be a smooth unit normal vector field. 
+	Let $\nabla$ denote the Levi-Civita connection on $M$. 
+	
+	\begin{lemma}
+		Let $X \in \mathfrak X(S)$ be a smooth vector field tangent to $S$. Then $\nabla_X N:S \rightarrow TM$ is also tangent to $S$.
+	\end{lemma}
+	\begin{proof}
+		By compatibility with the metric, we have $\langle \nabla_X N,N \rangle = \frac12 X \langle N,N \rangle = 0$.
+	\end{proof}
+
+	We define the \emph{Weingarten map of $S$ (with respect to $N$) by} $$W:\mathfrak X(S) \rightarrow \mathfrak X(S),\qquad W(X) := - \nabla_X N.$$
+	Since $W$ is $C^\infty(S)$-linear, it follows that $W$ is a $(1,1)$-tensor field on $S$.
+	
+	\begin{proposition}
+		The Weingarten map $W$ is self-adjoint.
+	\end{proposition}
+	\begin{proof}
+		Let $X,Y \in \mathfrak X(S)$. Then 
+		$$\langle W(X), Y \rangle = \langle N, \nabla_X Y \rangle = \langle N, \nabla_Y X \rangle = \langle X, W(Y) \rangle,$$
+		where we have used compatibility with the metric in the first and last equality, and zero torsion in the second.
+	\end{proof}
+	The \emph{mean curvature of $S$ (with respect to $N$)} is defined to be $h := \tr(W)$.
+	
+	
+	Let $f:M \rightarrow \R$. We say that $c \in \R$ is a \emph{regular value of $f$} if $\grad(f)_p$ is non-zero for any $p \in f^{-1}(c)$.
+	\begin{proposition}
+		Let $c$ be a regular value for $f$. Then $S  := f^{-1}(c)$ is a closed embedded hypersurface and $\grad(f)$ is orthogonal to $S$.
+	\end{proposition}
+	\begin{proof}
+		Fix $p \in S$ and $v \in T_p S$, and let $\gamma:I \rightarrow S$ be a smooth curve such that $\gamma(0) = p$ and $\gamma'(0) = v$. Then $\langle \grad(f)_p, v \rangle = df_p(v) = (f \circ \gamma)'(0) = 0$.
+	\end{proof}
+	\subsection{Laplace-Beltrami operator}
+	Let $(M,g)$ be a Riemannian manifold, and let $\nabla$ denote the Levi-Civita connection. Recall that if $\omega$ is a covector field, then $\nabla \omega$ is the $(0,2)$-tensor field given by 
+	$$\nabla \omega(X,Y) := (\nabla_Y \omega )X := Y \omega(X) - \omega(\nabla_Y X).$$
+	Let $f:M \rightarrow \R$ be a smooth function. We define the \emph{Hessian of $f$} to be the $(0,2)$-tensor field given by $\hess(f) := \nabla(df)$.
+	
+	\begin{proposition}
+		Let $f \in C^\infty(M)$. Then $\hess(f)$ is symmetric.
+	\end{proposition}
+	\begin{proof}
+		Let $X,Y \in \mathfrak X(M)$. Then
+		$$\hess(f)(X,Y) = YXf - (\nabla_Y X) f = XY f -( \nabla_X Y )f = \hess(f)(Y,X),$$
+		where the second equality follows because $\nabla$ has zero torsion.
+	\end{proof}
+
+	Let $f \in C^\infty(M)$. Recall that the $(1,1)$-tensor field $\hess(f)^\sharp$ is defined implicitly by $$\langle \hess(f)^\sharp(X),Y \rangle = \hess(f)(X,Y) \quad \forall X,Y \in \mathfrak X(M).$$
+	We define the \emph{Laplace-Beltrami operator} $\Delta:C^\infty(M) \rightarrow C^\infty(M)$ by $$\nabla f := \tr(\hess(f)^\sharp).$$
+	
+	\begin{proposition}
+		Let $f \in C^\infty(M)$ and let $E_1,\ldots,E_n$ be a smooth global orthonormal frame. Then 
+		$$\Delta f = \sum_{i=1}^n E_i^2 f - \sum_{i=1}^n (\nabla_{E_i} E_i)f.$$
+	\end{proposition}
+	\begin{proof}
+		Let $\varepsilon^1,\ldots,\varepsilon^n$ denote the dual frame. Since $\hess(f)^\sharp$ is a $(1,1)$-tensor field, we can write $\hess(f)^\sharp = h_i^j \varepsilon^i \otimes E_j$. The coefficient functions $h_i^j$ can be computed to be 
+		$h_i^j  = \varepsilon^j(\hess(f)^\sharp (E_i)) =  \langle \hess(f)^\sharp (E_i), E_j \rangle  = \hess(f) (E_i, E_j),$
+		so 
+		$$\nabla f = \tr(\hess(f)^\sharp ) = \sum_{i=1}^n h_i^i = \sum_{i=1}^n\hess(f) (E_i, E_i).$$
+		Expanding the last expression gives the result.
+	\end{proof}
+
+	\subsection{Radially-symmetric functions}
+	Let $(M,g)$ be a complete Riemannian manifold, and fix $p \in M$. Let $\varepsilon > 0$ be small enough so that 
+	$$B_\varepsilon(p) = \Big\{q \in M \;\Big| \; d(p,q) < \varepsilon\Big\}$$
+	is a normal neighbourhood around $p$. Set $\widehat B_\varepsilon(p) := B_\varepsilon(p) \backslash\{p\}$.
+	
+	\begin{proposition}
+		Let $q  \in B_\varepsilon(p)$.  let $q = \exp(t_0 v)$, where $|v| = 1$. Then the geodesic $\gamma:[0,t_0] \rightarrow M$ given by $\gamma(t) := \exp_p(tv)$ is the unique distance-minimising unit-speed curve from $p$ to $q$.
+	\end{proposition}
+
+	The \emph{radial distance function with respect to $p$} is the map $r_p: \widehat B_\varepsilon(p) \rightarrow M$ given by $r_p(q) := d(p,q)$. 
+	\begin{proposition}
+		The radial distance function is given by $r_p(q) = |\exp_p^{-1}(q)|$. Thus, $r_p$ is smooth on its domain. 
+	\end{proposition}
+	\begin{proof}
+		 Fix $q = \exp(t_0v) \in \widehat B_\varepsilon(p)$, where $|v| = 1$. Let $\gamma:[0,t_0] \rightarrow M$ be given by $\gamma(t) := \exp_p(tv)$. Then $r_p(q) = L(\gamma) = t_0 = |\exp_p^{-1}(q)|$.  
+	\end{proof}
+
+	We define the \emph{radial vector field} $\partial_r:\widehat B_\varepsilon(p) \rightarrow TM$ by $\partial_r|_q := d(\exp_p)_{tv}(v)$, where $|v| = 1$ and $q = \exp_p(tv)$.
+	\begin{proposition}
+		The radial vector field $\partial_r$ is a unit vector field.
+	\end{proposition}
+	\begin{proof}
+		Fix $q = \exp(t_0v) \in \widehat B_\varepsilon(p)$, where $|v| = 1$. Let $\gamma:[0,t_0] \rightarrow M$ be given by $\gamma(t) := \exp_p(tv)$. Then $1 = |\gamma'(t_0)| = |d(\exp_p)_{tv}(v)| = |\partial_r|_q|$.
+	\end{proof}
+	\begin{proposition}[The Gauss lemma]
+		 We have $\partial_r = \grad(r_p)$.
+	\end{proposition}
+	
+	For each $t \in (0,\varepsilon)$, the \emph{geodesic sphere of radius $r$ centred at $p$} is given by $$S_t := r_p^{-1}(t) = \Big\{q \in M \;\Big|\; d(p,q) = t\Big\}.$$
+	Observe that each $t \in (0,\varepsilon)$ is a regular value of $r_p$, so each  $S_t$ is a closed embedded hypersurface with smooth unit normal $\partial_r$.
+	
+	Let $f: \widehat B_\varepsilon(p) \rightarrow \R$ be a function. We say that $f$ is \emph{radially-symmetric} if there exists a function $F:(0,\varepsilon) \rightarrow \R$ such that $f = F \circ r_p$. Equivalently, $f$ is radially-symmetric if and only if $f$ is constant on each geodesic sphere.
+	
+	\begin{proposition}
+		Suppose $f: \widehat B_\varepsilon(p) \rightarrow \R$ is smooth and radially-symmetric with $f = F \circ r_p$. Then $F$ is smooth and 
+		$\partial_r f = F' \circ r_p.$
+	\end{proposition}
+	
+	
+	
+	\subsection{Jacobi fields}
+	\subsection{The Riemannian density function}
+	\subsection{Harmonic manifolds}
+	
+	
+	
+	\section{Damek-Ricci Spaces}
+	\subsection{Construction} 
+	For the rest of this document, fix a Heisenberg type Lie group $N$  and denote its Lie algebra by $\n$.
+	Let $\a$ denote the Lie algebra of $\R$. We know that $\a$ is spanned by $A := d/dx$ and the exponential map 
+	$\exp_{\a}: \a \rightarrow \R$ is the diffeomorphism given by $sA \mapsto s$.
+	Define 
+	$\theta:\R \times N \rightarrow N$ by 
+	\begin{equation}
+		\theta(s, \exp_{\n}(V + Y)) := \exp_{\n} (e^{s/2}V + e^s Y).
+	\end{equation}
+	
+	\begin{lemma}
+		The map $\theta$ is a smooth left action by automorphisms.
+	\end{lemma}
+	\begin{proof}
+		First, $\theta$ is smooth because we can write $\theta$ as a composition of smooth maps:
+		$$\begin{tikzcd}
+			\R \times N \arrow{rr}{\id_\R \times \exp_\n^{-1}}  & & \R \times \n \arrow{rrrr}{(s,V+Y) \mapsto e^{s/2}V + e^s Y} &&&& \n \arrow{r}{\exp_\n}& N.
+		\end{tikzcd}$$
+		Next, we find that for $s,t \in \R$, 
+		\begin{align*}
+			(\theta_{s} \circ \theta_t)(\exp_\n(V+Y)) &= \theta_s(\exp_\n(e^{t/2}V + e^{t}Y))\\
+			&=\exp_\n(e^{(s+t)/2}V + e^{s+t}Y) \\
+			&= \theta_{s+t}(\exp_\n(V+Y)), \\
+			\theta_{s=0}(\exp_\n(V+Y))  &= (\exp_\n(V+Y)).
+		\end{align*}
+		Thus, we have shown that $\theta$ is a smooth left action. 
+		
+		It remains to show that $\theta$ acts by automorphisms. Fix $s \in \R$, and consider $\theta_s:N \rightarrow N$. We know that $\theta_s$ is a diffeomorphism, so it remains to check that $\theta_s$ is a group homomorphism. Fix two arbitrary elements $\exp_\n(U+X)$ and $\exp_\n(V+Y)$ in $N$. By Proposition \ref{multiplication in N}, we find
+		\begin{align*}
+			&\theta_s\left(\exp_\n(U+X)\cdot \exp_\n(V+Y) \right) \\
+			&= \theta_s\left(\exp_\n\left(U+V + X + Y + \frac12 [U,V]\right)\right) \\
+			&= \exp_\n\left(e^{s/2} U + e^s X + e^{s/2} V + e^s Y + \frac12 e^s [U,V]\right).
+		\end{align*}
+		On the other hand, we find 
+		\begin{align*}
+			&\theta_s(\exp_\n(U+X)) \cdot \theta_s(\exp_\n(U+Y)) \\
+			&= \exp_\n(e^{s/2} U + e^s X)\cdot \exp_n(e^{s/2} V + e^s Y) \\
+			&= \exp_\n\left(e^{s/2} U + e^s X + e^{s/2} V + e^s Y + \frac12 e^s [U,V]\right).
+		\end{align*}
+		This shows that $\theta_s$ is a group homomorphism. The proof is now complete.
+	\end{proof}
+
+	We define the Lie group $S$ to be the semidirect product of $\R$ acting on $N$ with respect to $\theta$. Symbolically, we write $S = N \rtimes_\theta \R$. 
+
+	Let $\s$ denote the Lie algebra of $S$. Note that, as a vector space, we can write $\s = \v \oplus \z \oplus \a$. Thus, every element in $\s$ can be written uniquely as $$V + Y  + sA,$$ where $V \in \v$, $Y \in \z$ and $s \in \R$.
+	We define the inner product on $\s$ by 
+	\begin{equation}
+		\langle U + X + rA, V + Y + sA \rangle_{\s} := \langle U + X, V + Y  \rangle_{\n} + rs.
+	\end{equation}
+	Let $g$ denote the left-invariant metric on $S$ induced by $\langle \cdot,\cdot \rangle_{\mathfrak s}$.
+	
+	\begin{definition}
+		We say that the Lie group $S$ equipped with the left-invariant metric $g$ is a \emph{Damek-Ricci space.}
+	\end{definition}
+
+	
+	 \begin{proposition}
+	 	The group multiplication on $S = N \rtimes_\theta \R$ is given by
+	 	\begin{align*}
+	 		&(\exp_{\n}(U+X),r) \cdot (\exp_{\n}(V+Y),s)  \\
+	 		&= \left( \exp_{\n}\left(U + e^{r/2} V + X + e^r Y+ \frac12 e^{r/2}[U,V], r+s\right)\right).
+	 	\end{align*}
+	 \end{proposition}
+	 \begin{proof}
+	 	By definition of the group multiplication on a semidirect product, we have 
+	 	\begin{align*}
+	 		&(\exp_\n(U+X),r) \cdot (\exp_\n(V+Y), s) \\
+	 		&= \left( \exp_\n(U+X) \cdot \theta_r\left(\exp_\n(V+Y)\right), r + s\right) \\
+	 		&= \left( \exp_\n(U+X) \cdot\exp_\n(e^{r/2}V + e^r Y), r + s\right) \\
+	 		&=\left( \exp_{\n}\left(U + e^{r/2} V + X + e^r Y+ \frac12 e^{r/2}[U,V], r+s\right)\right),
+	 	\end{align*}
+ 		as desired.
+	 \end{proof}
+ 	
+ 	\subsection{One parameter subgroups}
+ 	\begin{proposition}
+ 		\label{one parameter subgroup}
+ 		Let $V+Y+sA \in \s$. Then the one parameter subgroup $\alpha: \R \rightarrow S$ generated by $V + Y + sA$ is given by 
+ 		$$\alpha(t) = \begin{cases}
+ 			(\exp_{\n}(tV + tY),0) & \text{if }s = 0, \\
+ 			\left(\exp_{\n}\left(\frac 2s(e^{st/2}-1)V + \frac1s(e^{st}-1) Y\right),st\right) & \text{if }s \neq  0.
+ 		\end{cases}$$
+ 	\end{proposition}
+ 	\begin{proof}
+ 		By Proposition \ref{equivalence one parameter}, it suffices to show that $\alpha$ is a Lie group homomorphism satisfying $\alpha'(0) = V + Y + sA$.
+ 		
+ 		First, suppose $s = 0$. Then by definition,
+ 		$$\alpha(t) = (\exp_{\n}(tV + tY),0).$$
+ 		We know that $\alpha$ is smooth, because it is a composition of smooth maps:
+ 		$$\begin{tikzcd}
+ 			\R \arrow{rrr}{t \mapsto t V + tY} &&& \s  \arrow{rrr}{\exp_\n \times \exp_\a}&&& S.
+ 		\end{tikzcd}$$
+ 		Fix $t, \widetilde t \in \R$. Then 
+ 		\begin{align*}
+ 			\alpha(t) \cdot \alpha(\widetilde t) &= (\exp_{\n}(tV + tY),0) \cdot (\exp_{\n}(\widetilde tV + \widetilde tY),0) \\
+ 			&= \left( \exp_\n(tV + \widetilde t V + t Y + \widetilde tY)\right) \\
+ 			&= \alpha(t + \widetilde t).
+ 		\end{align*}
+ 		Thus, $\alpha$ is a Lie group homomorphism. Finally, we find 
+ 		\begin{align*}
+ 			\alpha'(0) &= \frac{d}{dt}\bigg|_{t= 0}\left(\exp_\n(tV+tY),0\right) = \frac{d}{dt}\bigg|_{t= 0}(tV+tY)  =V+Y,
+ 		\end{align*}
+ 		where the second equality follows from the fact that $d \exp_\n|_0 = \id_\n$.
+ 		
+ 		Next, suppose $s \neq 0$. Then by definition, 
+ 		$$\alpha(t) = \left(\exp_{\n}\left(\frac 2s(e^{st/2}-1)V + \frac1s(e^{st}-1) Y\right),st\right).$$
+ 		We know that $\alpha$ is smooth, because it is a composition of smooth maps:
+ 		$$\begin{tikzcd}
+ 			\R \arrow{rrrrrrr}{t \mapsto \frac 2s(e^{st/2}-1)V + \frac1s(e^{st}-1) Y + stA}  &&&&&&& \s  \arrow{rrr}{\exp_\n \times \exp_\a}&&& S.
+ 		\end{tikzcd}$$
+ 		Fix $t, \widetilde t \in \R$. Then 
+ 		\begin{align*}
+ 			\alpha(t) \cdot \alpha(\widetilde t) &= \left(\exp_{\n}\left(\frac 2s(e^{st/2}-1)V + \frac1s(e^{st}-1) Y\right),st\right)\\
+ 			 &\qquad \cdot 
+ 			\left(\exp_{\n}\left(\frac 2s(e^{s\widetilde t/2}-1)V + \frac1s(e^{s\widetilde t}-1) Y\right),s \widetilde t\right) \\
+ 			&= \left( \exp_\n\left( \frac2s(e^{st/2}e^{s\widetilde t/2}-1)V + \frac1s(e^{st}e^{s\widetilde t}-1)Y\right), st + s \widetilde t\right) \\
+ 			&= \alpha(t + \widetilde t).
+ 		\end{align*}
+ 		This shows that, $\alpha$ is a Lie group homomorphism. Computing $\alpha'(0)$ gives 
+ 		\begin{align*}
+ 			\alpha'(0) &= \frac{d}{dt}\bigg|_{t= 0} \left(\exp_{\n}\left(\frac 2s(e^{st/2}-1)V + \frac1s(e^{st}-1) Y\right),st\right) \\
+ 			&= \frac{d}{dt}\bigg|_{t= 0}\left(\frac 2s(e^{st/2}-1)V + \frac1s(e^{st}-1) Y + stA\right) \\
+ 			&= V + Y + sA.
+ 		\end{align*}
+ 		This completes the proof.
+ 	\end{proof}
+ 
+ 	\subsection{The Lie algebra}
+	 
+	 \begin{proposition}
+	 	\label{semidirect product}
+	 	The Lie algebra of $S= N \rtimes_\theta \R$ is given by $\s = \n \rtimes_{f} \a$, where 
+	 	$$f:\a \rightarrow \der(\n), \quad f(sA)(V+Y) := \frac12 sV + sY.$$
+	 \end{proposition}
+	 \begin{proof}
+	 	Define $F:\R \rightarrow \aut(N)$ by $F(s) := \theta_s$. Thus, we have 
+	 	$$F(s)(\exp_\n(V+Y)) = \exp_\n(e^{s/2}V + e^sY).$$
+	 	By Proposition \ref{semidirect}, we know that the Lie algebra of $S = N \rtimes_\theta \R$ is $\s = \n \rtimes_{\widetilde F_*} \a$, so it suffices to show that $f = \widetilde F_*$. Recall that we define $\widetilde F:\R \rightarrow \aut(\n)$ by $s \mapsto (F(s))_*$. First, observe that we can write 
+	 	$$\begin{tikzcd}
+	 		F(s):N \arrow{rr}{\exp_\n^{-1}}&& \n \arrow{rrrr}{V+Y\mapsto e^{s/2}V + e^s Y} &&&& \n \arrow{rr}{\exp_\n} && N.
+	 	\end{tikzcd}$$
+ 		By taking the differential of $F(s)$ at the identity in $N$, we find 
+ 		$$\begin{tikzcd}
+ 			\widetilde F(s) = (F(s))_*:\n \arrow{rr}{\id_\n}&& \n \arrow{rrrr}{V+Y\mapsto e^{s/2}V + e^s Y} &&&& \n \arrow{rr}{\id_\n} && \n,
+ 		\end{tikzcd}$$
+ 		so each $\widetilde F(s)$ is given by $V+Y \mapsto e^{s/2}V + e^s Y$. 
+ 		
+ 		We wish to compute $\widetilde F_*:\a \rightarrow \der(\n)$. Fix a basis $V_1,\ldots,V_n,Y_1,\ldots,Y_m$ for $\n$ so that each $V_i$ belongs to $\v$ and each $Y_i$ belongs to $\z$. Using this basis, we can identify $\n$ with $\R^{n+m}$. Under this identification, for each $s \in \R$, we can write 
+ 		%\setlength\arraycolsep{2pt}
+ 		%\renewcommand*{\arraystretch}{.6}
+ 		$$\widetilde F(s) = \left(\begin{array}{rrrrrr}
+ 			e^{s/2} &\cdots&0&0&\cdots&0 \\
+ 			\vdots& \ddots &\vdots&\vdots&&\vdots \\
+ 			0&\cdots& e^{s/2} &0&\cdots&0 \\
+ 			0&\cdots& 0& e^s &\cdots& 0\\
+ 			\vdots&&\vdots&\vdots& \ddots &\vdots \\
+ 			\undermat{n\text{ columns}}{0&\cdots&0 &} \undermat{m\text{ columns}}{0&\cdots& e^s}
+ 		\end{array}\right).$$
+ 		\vspace{5mm}
+ 	
+ 		Recall that $A = \frac{d}{dt}$ is the standard coordinate vector field on $\R$. We find
+ 		$$ \widetilde F_*(A) =  \widetilde F'(0) = \left(\begin{array}{rrrrrr}
+ 			\frac12 &\cdots&0&0&\cdots&0 \\
+ 			\vdots& \ddots &\vdots&\vdots&&\vdots \\
+ 			0&\cdots& \frac12 &0&\cdots&0 \\
+ 			0&\cdots& 0& 1 &\cdots& 0\\
+ 			\vdots&&\vdots&\vdots& \ddots &\vdots \\
+ 			\undermat{n\text{ columns}}{0&\cdots&0 &} \undermat{m\text{ columns}}{0&\cdots& 1}
+ 		\end{array}\right).$$
+ 		\vspace{5mm} 
+			
+ 		Linearity of $F_*$ implies that for any $s \in \R$,
+ 		$$\widetilde F_*(sA) = \left(\begin{array}{rrrrrr}
+ 			\frac12s &\cdots&0&0&\cdots&0 \\
+ 			\vdots& \ddots &\vdots&\vdots&&\vdots \\
+ 			0&\cdots& \frac12s &0&\cdots&0 \\
+ 			0&\cdots& 0& s &\cdots& 0\\
+ 			\vdots&&\vdots&\vdots& \ddots &\vdots \\
+ 			\undermat{n\text{ columns}}{0&\cdots&0 &} \undermat{m\text{ columns}}{0&\cdots& s}
+ 		\end{array}\right).$$
+ 		\vspace{5mm} 
+ 
+ 		Therefore, for each $s \in \R$, we can write 
+ 		$$\widetilde F_*(sA)(V+Y) = \frac12 s V + sY = f(sA)(V+Y),$$
+ 		so $\widetilde F_* = f$. The result follows.
+	 \end{proof}
+	 
+	 \begin{proposition}
+	 	\label{connection}
+	 	The Lie bracket on $\s$ is given by 
+	 	$$[U+X+rA,V+Y+sA]_\s = [U,V]_\n + \frac12 rV - \frac12 sU + rY - sX.$$
+	 \end{proposition}
+	 \begin{proof}
+	 	By Proposition \ref{semidirect product}, we know that $\s = \n \rtimes_f \a$, where $f:\a \rightarrow \der(\n)$ is given by 
+	 	$$f(sA) (V+Y) := \frac12 s V + Y.$$
+	 	By definition of the Lie bracket of a semidirect product (see Definition \ref{definition of algebra semidirect}), we find that the Lie bracket on $\s$ is given by 
+	 	\begin{align*}
+	 		[&U+X+rA,V+Y+ sA]_\s \\&= [U,V]_\n + f(rA)(V+Y) - f(sA)(U+X) + [rA,sA]_\a \\
+	 		&=[U,V]_\n + \frac12 rV - \frac12 sU + rY - sX,
+	 	\end{align*}
+ 		as desired.
+	 \end{proof}
+ 
+ 	
+
+ 	
+ 	\subsection{The Levi-Civita connection}
+ 	
+ 	\begin{proposition}
+ 		The Levi-Civita connection $\nabla$ on $S$ is given by
+ 		\begin{align}
+ 			&\nabla_{V+Y+sA}(U+X+rA) \nonumber\\
+ 			&= -\frac12 J_X V  -\frac12 J_Y U - \frac12 rV - \frac12 [U,V]_\n -rY + \frac12 \langle U,V \rangle A + \langle X,Y \rangle A. \label{connections}
+ 		\end{align}
+ 	\end{proposition}
+ 	\begin{proof}
+ 		Fix $U+X+rA$ and $V+Y+sA$ in $\s$. Let $W+Z+tA \in \s$ be arbitrary. To show (\ref{connections}), it suffices to show that the inner product of both sides with $W+Z+tA$ evaluate to the same expression.
+ 		First, by the Koszul Formula, we find 
+ 		\begin{align*}
+ 			&2 \langle \nabla_{V+Y+ sA}(U+X+rA),W+Z+tA \rangle \\
+ 			&= - \langle [V+Y+sA,W+Z+tA], U+X+rA \rangle \\
+ 			&\quad -\langle[U+X+rA, W+Z+tA], V+Y+sA \rangle \\
+ 			& \quad - \langle [U+X+rA, V+Y+ sA],W+Z+tA \rangle \\
+ 			&= - \left\langle \frac12 sW - \frac12 tV+ sZ - tY + [V,W], U+X+rA \right\rangle \\
+ 			&\quad -\left\langle \frac12 rW - \frac12 tU + rZ - tX +[U,W], V+Y+sA \right\rangle \\
+ 			& \quad - \left\langle \frac12 rV - \frac12 sU + rY -sX+[U,V],W+Z+tA \right\rangle \\ 
+ 			&= - \frac12 s \langle W,U\rangle + \frac12 t \langle V,U \rangle - s \langle Z,X \rangle + t\langle Y,X \rangle - \langle [V,W],X \rangle \\
+ 			&\quad - \frac12 r \langle W,V \rangle + \frac12 t \langle U,V \rangle - r\langle Z,Y \rangle + t \langle X,Y \rangle - \langle[U,W],Y \rangle \\
+ 			&\quad - \frac12 r \langle V,W \rangle + \frac12 s \langle U,W \rangle - r\langle Y,Z \rangle + s\langle X,Z \rangle - \langle [U,V],Z \rangle \\
+ 			&=-r\langle V,W \rangle + t \langle U,V \rangle -2r \langle Y,Z \rangle + 2t \langle X,Y \rangle \\
+ 			&\quad-\langle [V,W],X \rangle  - \langle[U,W],Y \rangle  - \langle [U,V],Z \rangle.
+ 		\end{align*}
+ 		On  the other hand, 
+ 		\begin{align*}
+ 			&\left\langle -J_X V  -J_Y U -  rV - [U,V]_\n -2rY + \langle U,V \rangle A + 2\langle X,Y \rangle A,W+Z+tA\right\rangle \\
+ 			&=-r\langle V,W \rangle + t \langle U,V \rangle -2r \langle Y,Z \rangle + 2t \langle X,Y \rangle \\
+ 			&\quad-\langle [V,W],X \rangle  - \langle[U,W],Y \rangle  - \langle [U,V],Z \rangle.
+ 		\end{align*}
+ 		The result follows.
+ 	\end{proof}
+ 	
+ 	\subsection{Geodesics}
+ 
+ 	\begin{proposition}
+ 		\label{geodesics}
+ 		Let $V+Y+ sA \in \s$ be a unit vector, and let $\gamma:\R \rightarrow S$ be the geodesic satisfying $\gamma(0) = e$ and $\gamma'(0) = V+ Y+ sA$. Then 
+ 		$$\gamma = \left( \exp_\n\left(\frac{2\theta(1-s\theta)}{\chi}V + \frac{2\theta^2}{\chi} J_Y V + \frac{2\theta}{\chi} Y\right), \ln\left(\frac{1-\theta^2}{\chi}\right)\right),$$
+ 		where $\theta,\chi:\R \rightarrow \R$ are given by 
+ 		$$\theta(t) := \tanh(t/2), \qquad \chi := (1-s\theta)^2 + |Y|^2 \theta^2.$$
+ 	\end{proposition}
+ 
+ 
+
+ 	
+ 	\subsection{Some formulas in global coordinates} 
+ 	Let $V_1,\ldots,V_n,Y_1,\ldots,Y_m,A$ be an orthonormal basis for $\s$, where $V_1,\ldots,V_n \in \v$ and $Y_1,\ldots,Y_m \in \z$. Let 
+ 	$$(\widetilde v_1,\ldots, \widetilde v_n,\widetilde y_1,\ldots,\widetilde y_m,\widetilde \lambda):\s \rightarrow \R^{n+m+1}$$ 
+ 	be the coordinate functions on $\s$ induced by the basis. 
+ 	We know that $\exp_{\n} \times \exp_{\a}:\s \rightarrow S$ is a diffeomorphism. Define global coordinates $v_1,\ldots,v_n,y_1,\ldots,y_m,\lambda:S \rightarrow \R$ on $S$ by 
+ 	$$(v_1,\ldots,v_n,y_1,\ldots,y_m,\lambda) := (\widetilde v_1,\ldots, \widetilde v_n,\widetilde y_1,\widetilde y_m,\widetilde \lambda) \circ (\exp_{\n} \times \exp_{\a})^{-1}.$$
+ 	
+ 	We define the \emph{structure coefficients} $\mu_{ij}^k$ by 
+ 	$$\mu_{ij}^k := \langle [V_i,V_j], Y_k \rangle = \langle J_{Y_k}V_i, V_j \rangle,$$
+ 	where $i$ and $j$ range from $1$ to $n$, and $k$ ranges from $1$ to $m$.
+ 	
+ 	\begin{proposition}
+ 		\label{structure coefficients}
+ 		Let $j,r = 1,\ldots,n$ and $k,s= 1,\ldots,m$ be fixed indices. Then
+ 		\begin{align}
+ 			\mu_{ij}^k &= -\mu_{ji}^k, \label{bad1}\\
+ 			\sum_i \mu_{ij}^k \mu_{ir}^s &= - \sum_i \mu_{ir}^k \mu_{ij}^s \quad \text{for} \quad j \neq r,\label{bad2} \\
+ 			\sum_i \mu_{ij}^k \mu_{ij}^s &= \delta_{ks}. \label{bad3}
+ 		\end{align}
+ 	\end{proposition}
+ 	\begin{proof}
+ 		Equation (\ref{bad1}) follows because 
+ 		$$	\mu_{ij}^k = \langle [V_i,V_j], Y_k \rangle = -  \langle [V_j,V_i], Y_k \rangle  = - \mu_{ji}^k.$$
+ 		
+ 		Since $\mathcal B := \{V_1,\ldots,V_n\}$ forms an orthonormal basis for $\v$, we know that the matrix representation of $J_{Y_k}$ with respect to $\mathcal B$ is 
+ 		$$[J_{Y_k}]_{\mathcal B}^{\mathcal B} = 
+ 		\begin{pmatrix}
+ 			\langle J_{Y_k}V_1,V_1 \rangle & \cdots&\langle J_{Y_k}V_n,V_1 \rangle \\
+ 			\vdots &\ddots& \vdots \\
+ 			\langle J_{Y_k}V_1,V_n \rangle & \cdots&\langle J_{Y_k}V_n,V_n\rangle 
+ 		\end{pmatrix} 
+ 		=\begin{pmatrix}
+ 			\mu_{11}^k & \cdots& \mu_{n1}^k\\
+ 			\vdots &\ddots& \vdots \\
+ 			\mu_{1n}^k& \cdots& \mu_{nn}^k
+ 		\end{pmatrix}.
+ 		$$
+ 		
+ 		By (\ref{polarisation}), we know that 
+ 		$$J_{Y_k} J_{Y_s} + J_{Y_s} J_{Y_k} = - 2 \delta_{ks} \id_\v.$$
+ 		Representing both sides as matrices with respect to the basis $\mathcal B$ then gives
+ 		\begin{align*}
+ 			\begin{pmatrix}
+ 				\sum_i (\mu_{1i}^k\mu_{i1}^s + \mu_{1i}^s\mu_{i1}^k) & \cdots& \sum_i (\mu_{ni}^k\mu_{i1}^s + \mu_{ni}^s\mu_{i1}^k) \\
+ 				\vdots &\ddots& \vdots \\
+ 				\sum_i (\mu_{1i}^k\mu_{in}^s + \mu_{1i}^s\mu_{in}^k) & \cdots& \sum_i (\mu_{ni}^k\mu_{in}^s + \mu_{ni}^s\mu_{in}^k) 
+ 			\end{pmatrix}
+ 			=-2 \delta_{ks} \text{I}_{n \times n}.
+ 		\end{align*}
+ 		This implies that 
+ 		$$\sum_{i} \mu_{ji}^k\mu_{ir}^s +  \sum_i\mu_{ji}^s\mu_{ir}^k = -2 \delta_{ks} \delta_{jr}.$$
+ 		Applying (\ref{bad1}) shows that 
+ 		\begin{equation}
+ 			\label{bad4}
+ 			\sum_{i} \mu_{ij}^k\mu_{ir}^s +  \sum_i\mu_{ij}^s\mu_{ir}^k = 2 \delta_{ks} \delta_{jr}.
+ 		\end{equation}
+ 		Equations (\ref{bad2}) and (\ref{bad3}) follow from  (\ref{bad4}).
+ 	\end{proof}
+	
+	\begin{proposition}
+		\label{frame}
+		We have 
+		\begin{align}
+			&V_i = e^{\lambda/2} \frac{\partial}{\partial v_i} - \frac12 e^{\lambda/2} \sum_{j=1}^n \sum_{k=1}^m \mu_{ij}^k v_j \frac{\partial}{\partial y_k}, \label{Vi}\\ 
+			&Y_i = e^\lambda \frac{\partial}{\partial y_i}, \label{Yi}\\
+			&A = \frac{\partial}{\partial \lambda}. \label{A}
+		\end{align}
+	\end{proposition}
+	\begin{proof}
+		Fix a point $p = (\exp_\n(U+X),r)$ in $S$. 
+		
+		First, let us show (\ref{Vi}). By the formula for one parameter subgroups in $S$ (see Proposition \ref{one parameter subgroup}), we have
+		\begin{align*}
+			V_i|_p &= dL_p(V_i|_e) = dL_p \left(\frac{d}{dt}\bigg|_{t=0} \exp_\s(tV_i)\right) = \frac{d}{dt}\bigg|_{t=0} p \cdot (\exp_\n(tV_i),0) \\
+			&= \frac{d}{dt}\bigg|_{t=0} \left(\exp_\n\left( U +e^{r/2} tV_i + X + \frac12 te^{r/2}[U,V_i]\right),r\right) = \alpha'(0),
+		\end{align*}
+		where $\alpha:\R \rightarrow S$ is the smooth curve given by 
+		$$\alpha(t) = \left(\exp_\n\left( U +e^{r/2} tV_i + X + \frac12 te^{r/2}[U,V_i]\right),r\right) .$$
+		Thus, we can write 
+		\begin{equation}
+			\label{Vi at p}
+			V_i|_p = \alpha'(0) = \sum_k (v_k \circ \alpha)'(0) \frac{\partial}{\partial v_k}\bigg|_p + \sum_k (y_k \circ \alpha)'(0) \frac{\partial}{\partial y_k}\bigg|_p + (\lambda \circ \alpha)'(0) \frac{\partial}{\partial \lambda}\bigg|_p.
+		\end{equation}
+		It remains to compute the derivatives $(v_i \circ \alpha)'(0)$, $(y_k \circ \alpha)'(0)$ and $(\lambda \circ \alpha)'(0)$. We find 
+		\begin{align*}
+			(v_k \circ \alpha)(t) &= \widetilde v_k(U+e^{r/2}t V_i) = \widetilde v_k(U) + e^{r/2}t \delta_{ik}, \\
+			(y_k \circ \alpha)(t) &= \widetilde y_k\left( X+ \frac12 t e^{r/2} [U,V_i]\right) = \widetilde y_k(X) - \frac12 t e^{r/2} \sum_j \mu_{ij}^k v_j(p),\\
+			(\lambda \circ \alpha)(t) &= r.
+		\end{align*}
+		The second last computation follows because 
+		$$\widetilde y_k([U,V_i]) = -\langle [V_i,U],Y_k \rangle  = - \sum_j\widetilde v_j(U) \langle[V_i, Y_j] Y_k \rangle = - \sum_j v_j(p)\mu_{ij}^k.$$
+		Taking derivatives at zero gives 
+		\begin{align*}
+			(v_k \circ \alpha)'(0) = e^{r/2} \delta_{ik}, \quad (y_k \circ \alpha)'(0) = -\frac12 e^{r/2} \sum_j \mu_{ij}^k v_j(p), \quad (\lambda \circ \alpha)'(0) = 0.
+		\end{align*}
+		Substituting the above into (\ref{Vi at p}) gives the formula for $V_i$.
+		
+		Next, let us show (\ref{Yi}). We have 
+		\begin{align*}
+			Y_i|_p &= dL_p(Y_i|_e)= dL_p \left(\frac{d}{dt}\bigg|_{t=0} \exp_\s(tY_i)\right) = \frac{d}{dt}\bigg|_{t=0}p \cdot (\exp_\n(tY_i),0) \\
+			&= \frac{d}{dt}\bigg|_{t=0} \left( \exp_\n(U+X+e^rt Y_i),0\right) = \beta'(0),
+		\end{align*}
+		where $\beta:\R \rightarrow S$ is given by 
+		$$\beta(t) = \left( \exp_\n(U+X+e^rt Y_i),0\right).$$
+		Therefore, 
+		\begin{equation}
+			\label{Yi at p}
+			Y_i|_p = \beta'(0) = \sum_k (v_k \circ \beta)'(0) \frac{\partial}{\partial v_k}\bigg|_p + \sum_k (y_k \circ \beta)'(0) \frac{\partial}{\partial y_k}\bigg|_p + (\lambda \circ \beta)'(0) \frac{\partial}{\partial \lambda}\bigg|_p.
+		\end{equation}
+		We find 
+		$$(v_k \circ \beta)(t) = \widetilde v_k(U), \quad (y_k \circ \beta)(t) = e^r t \delta_{ik}, \quad (\lambda \circ \beta)(t) = 0,$$
+		so taking derivatives at zero yields 
+		$$(v_k \circ \beta)'(0) = 0,\quad (y_k \circ \beta)'(0) =e^r \delta_{ik}, \quad (\lambda \circ \beta)'(0) = 0.$$
+		Substituting the above into (\ref{Yi at p}) gives the formula for $Y_i$.
+		
+		Finally, let us show (\ref{A}). We find 
+		\begin{align*}
+			A_p &= dL_p(A_e) = dL_p \left( \frac{d}{dt}\bigg|_{t=0} \exp_\s(tA)\right)
+			= \frac{d}{dt}\bigg|_{t=0} p \cdot (\exp_\n(0),t) \\
+			&= \frac{d}{dt}\bigg|_{t=0}(\exp_\n(U+X),r+t) = \gamma'(0),
+		\end{align*}
+		where $\gamma:\R \rightarrow S$ is given by $\gamma(t) = (\exp_\n(U+X),r+t)$. Thus, 
+		\begin{equation}
+			\label{A at p}
+			A_p = \gamma'(0) = \sum_k (v_k \circ \gamma)'(0) \frac{\partial}{\partial v_k}\bigg|_p + \sum_k (y_k \circ \gamma)'(0) \frac{\partial}{\partial y_k}\bigg|_p + (\lambda \circ \gamma)'(0) \frac{\partial}{\partial \lambda}\bigg|_p.
+		\end{equation}
+		We find 
+		$$(v_k \circ \gamma)(t) = \widetilde v_k(U),\quad (y_k \circ \gamma)(t) = \widetilde y_k(U),\quad (\lambda \circ \gamma)(t) = r+t.$$
+		Computing derivatives at zero gives 
+		$$(v_k \circ \gamma)'(0) = 0,\quad (y_k \circ \gamma)'(0) = 0, \quad (\lambda \circ \gamma)'(0) = 1.$$
+		Substituting the above into (\ref{A at p}) gives (\ref{A}).
+	\end{proof}
+
+	\begin{proposition}
+		\label{laplace coordinates}
+		The Laplace-Beltrami operator $\Delta$ on $S$ is given by 
+		\begin{align*}
+			\Delta &= e^\lambda \sum_{i=1}^n \frac{\partial^2}{\partial v_i^2} + e^{2 \lambda} \sum_{i=1}^m \frac{\partial^2}{\partial y_i^2} + \left( \frac14 e^\lambda \sum_{i=1}^n v_i^2\right) \sum_{i=1}^m \frac{\partial^2}{\partial y_i^2} + \frac{\partial^2}{\partial \lambda^2} \\
+			&- \left( m+ \frac n2\right) \frac{\partial}{\partial \lambda} + e^\lambda \sum_{i=1}^n \sum_{j=1}^n \sum_{k=1}^m \mu_{ij}^k v_i \frac{\partial}{\partial v_j} \frac{\partial}{\partial y_k}.
+		\end{align*}
+	\end{proposition}
+	\begin{proof}
+		Since $V_1,\ldots,V_n, Y_1,\ldots, Y_m,A$ forms a global orthonormal frame, by Proposition \ref{laplace beltrami}, we have a formula for the Laplace-Beltrami operator:
+		\begin{equation}
+			\label{m}
+			\Delta = \sum_i V_i^2 + \sum_i Y_i^2  + A^2  - \sum_i \nabla_{V_i}V_i- \sum_i \nabla_{Y_i}Y_i - \nabla_A A.
+		\end{equation}
+		Let us compute the terms individually. 
+		
+		Let $f \in C^\infty(S)$. By Proposition \ref{frame}, we have a formula for $V_i$ in terms of the standard coordinate vectors:
+		\begin{align*}
+			V_i^2 f  &= \left(e^{\lambda/2} \frac{\partial}{\partial v_i} - \frac12 e^{\lambda/2} \sum_{r,s} \mu_{ir}^s v_r \frac{\partial}{\partial y_s}\right)
+			 \left(e^{\lambda/2} \frac{\partial f}{\partial v_i} - \frac12 e^{\lambda/2} \sum_{j,k} \mu_{ij}^k v_j \frac{\partial f}{\partial y_k}\right) \\
+			 &= e^\lambda \frac{\partial^2 f}{\partial v_i^2} - \frac12 e^\lambda \sum_{r,s} \mu_{ir}^s v_r \frac{\partial^2 f}{\partial v_i\partial y_s } - \frac12 e^\lambda \sum_{j,k} \mu_{ij}^k \left(\delta_{ij} \frac{\partial f}{\partial y_k} + v_j \frac{\partial^2 f}{\partial v_i\partial y_k }\right) \\
+			 & \qquad \qquad + \frac14 \sum_{j,k,r,s} \mu_{ij}^k \mu_{ir}^s v_j v_r \frac{\partial^2 f}{\partial ly_k \partial y_s}.
+		\end{align*}
+		Thus, we find 
+		\begin{align*}
+			\sum_i V_i^2 f &= e^\lambda \sum_i\frac{\partial^2 f}{\partial v_i^2} - \frac12 e^\lambda \sum_{i,r,s} \mu_{ir}^s v_r \frac{\partial^2 f}{\partial v_i\partial y_s }  \\
+			& - \frac12 e^\lambda \sum_{i,j,k} \mu_{ij}^k \left(\delta_{ij} \frac{\partial f}{\partial y_k} + v_j \frac{\partial^2 f}{\partial v_i\partial y_k }\right) + \frac14 \sum_{i,j,k,r,s} \mu_{ij}^k \mu_{ir}^s v_j v_r \frac{\partial^2 f}{\partial y_k \partial y_s}.
+		\end{align*}
+		Consider the second term. We find 
+		\begin{align*}
+			 - \frac12 e^\lambda \sum_{i,r,s} \mu_{ir}^s v_r \frac{\partial^2 f}{\partial v_i\partial y_s }  &=  \frac12 e^\lambda \sum_{i,r,s} \mu_{ri}^s v_r \frac{\partial^2 f}{\partial v_i\partial y_s } \\
+			 &= \frac12 e^\lambda \sum_{i,j,k} \mu_{ij}^k v_i \frac{\partial^2 f}{\partial v_j\partial y_k },
+		\end{align*}
+		where we have used Proposition \ref{structure coefficients} to obtain $-\mu_{ir}^s = \mu_{ri}^s$ in the first equality, then rewrote the indices in the second equality. Now, consider the third term. We find 
+		\begin{align*}
+			- \frac12 e^\lambda \sum_{i,j,k} \mu_{ij}^k \left(\delta_{ij} \frac{\partial f}{\partial y_k} + v_j \frac{\partial^2 f}{\partial v_i\partial y_k }\right) &= - \frac12 e^\lambda \sum_{i,j,k} \mu_{ij}^k v_j \frac{\partial^2 f}{\partial v_i\partial y_k } \\
+			&= \frac12 e^\lambda \sum_{i,j,k} \mu_{ji}^k v_j \frac{\partial^2 f}{\partial v_i\partial y_k }  \\
+			&=\frac12 e^\lambda \sum_{i,j,k} \mu_{ij}^k v_i\frac{\partial^2 f}{\partial v_j\partial y_k }.
+		\end{align*}
+		The first equality follows because $\mu_{ii}^k = 0$, so the first order term vanishes. The second equality follows from $-\mu_{ij}^k = \mu_{ji}^k$, and the third equality follows by swapping $i$ and $j$. Finally, let us consider the last term. We find 
+		\begin{align*}
+			\frac14 e^\lambda \sum_{i,j,k,r,s} \mu_{ij}^k \mu_{ir}^s v_j v_r \frac{\partial^2 f}{\partial y_k \partial y_s} &= \frac14 e^\lambda\sum_{i,j,k,s} \mu_{ij}^k \mu_{ij}^s v_j^2 \frac{\partial^2 f}{\partial y_k \partial y_s}  \\ 
+			&= \frac14 e^\lambda\sum_{j,k} v_j^2 \frac{\partial^2 f}{\partial y_k^2} \\
+			&= \frac14e^\lambda \left(\sum_i v_i^2\right) \sum_i \frac{\partial^2 f}{ \partial y_i ^2}.
+		\end{align*}
+		The first equality follows because  that$ \sum_i \mu_{ij}^k \mu_{ir}^s = - \sum_i \mu_{ir}^k \mu_{ij}^s$ when $j \neq r$ (see Proposition \ref{structure coefficients}). The second equality because $	\sum_i \mu_{ij}^k \mu_{ij}^s  = \delta_{ks}$. Combining our computations together, we find 
+		\begin{equation}
+			\label{Vi squared}
+			\sum_i V_i^2  = e^\lambda \sum_i\frac{\partial^2 }{\partial v_i^2} + \left(\frac14e^\lambda\sum_i v_i^2\right) \sum_i \frac{\partial^2 }{ \partial y_i ^2} +  e^\lambda \sum_{i,j,k} \mu_{ij}^k v_i \frac{\partial^2 }{\partial v_j\partial y_k }.
+		\end{equation}
+		Next, using Proposition \ref{frame}, we immediately find 
+		\begin{equation}
+			\label{lol6}
+			\sum_iY_i^2 = e^{2 \lambda} \sum_i \frac{\partial^2}{\partial y_i^2},  \quad A^2 = \frac{\partial^2}{\partial \lambda^2}.
+		\end{equation}
+		Moreover, by Proposition \ref{connection}, we obtain 
+		$$
+			\nabla_{V_i} V_i = \frac12 A = \frac12 \frac{\partial}{\partial \lambda}, \quad \nabla_{Y_i} Y_i = A = \frac{\partial}{\partial \lambda},\quad  \nabla_A A = 0.
+		$$
+		Therefore, 
+		\begin{equation}
+			\label{lol5}
+			- \sum_i \nabla_{V_i}V_i- \sum_i \nabla_{Y_i}Y_i - \nabla_A A = -\left(m + \frac n2\right)\frac{\partial}{\partial \lambda}.
+		\end{equation}
+		Substituting  (\ref{Vi squared}), (\ref{lol6}), and (\ref{lol5}) into (\ref{m}) gives the result.
+	\end{proof}
+ 
+ 
+
+ 	\subsection{Proof of harmonicity}
+ 	Let $d_e:S\backslash\{0\} \rightarrow \R$ be the distance to the identity. That is, $d_e(p) := d(e,p)$.
+
+ 
+	\begin{lemma}
+		We can write $$d_e = \Phi \circ \Psi,$$ where $\Psi:S \rightarrow (4,\infty)$ is the smooth map given by 
+		\begin{equation}
+			\Psi := e^{-\lambda} \left(1 + \frac14 \sum_{i=1}^n v_i^2 + e^\lambda\right)^2 + e^{-\lambda }\sum_{i=1}^m y_i^2, \label{psi}
+		\end{equation}
+		and $\Phi:(4,\infty) \rightarrow (0,\infty)$ is the diffeomorphism given by 
+		$$\Phi(x) :=  2 \arctanh\left( \sqrt{1-\frac4x}\right).$$
+	\end{lemma}
+	\begin{proof}
+		First, it is straightforward to check that the image of $\Psi$ is indeed contained in $(4,\infty)$. Moreover, the map $\Phi$ is a diffeomorphism, because it is smooth with smooth inverse $\Phi^{-1}:(0,\infty)\rightarrow(4,\infty)$ given by $ \Phi^{-1}(x) = 4\cosh^2(x/2)$.
+		
+		Fix a point $p = (\exp_\n(U+X),r)$ in $S\backslash\{p\}$. 
+		Let $\gamma:\R \rightarrow S$ be a unit-speed geodesic satisfying $\gamma(0) = e$ and $\gamma(t) = p$ with $t > 0$ which realises the distance from $e$ to $p$. This geodesic exists because $S$ is complete. 
+		Let $V + Y + sA := \gamma'(0)$. Proposition \ref{geodesics} implies that 
+		\begin{equation}
+			p = \gamma(t) = \left( \exp_\n\left(\frac{2\theta(1-s\theta)}{\chi}V + \frac{2\theta^2}{\chi} J_Y V + \frac{2\theta}{\chi} Y\right), \ln\left(\frac{1-\theta^2}{\chi}\right)\right), \label{lol}
+		\end{equation}
+		where $$\theta := \tanh(t/2) \quad \text{and} \quad \chi := (1-s\theta)^2 + |Y|^2 \theta^2.$$ Here, $\theta$ and $\chi$ are fixed non-zero numbers. Comparing the expression for $p$ in (\ref{lol}) with $p = (\exp_\n(U+X),r)$ gives the following formulas:
+		\begin{align}
+			U &= \frac{2\theta(1-s\theta)}{\chi} V, \label{U}\\	
+			X &= \frac{2\theta }{\chi} Y, \label{X}\\
+			r &= \ln\left(\frac{1-\theta^2}{\chi}\right). \label{r}
+		\end{align}
+		Rearranging (\ref{r}) yields
+		\begin{equation}
+			\theta^2 = 1- \chi e^r. \label{theta squared}
+		\end{equation}
+	
+		\textbf{Step 1.} First, let us derive a sufficient condition for $d_e(p)$ to be equal to $ \Phi(\Psi(p))$. By rearranging the formula for $\theta$ and applying (\ref{theta squared}), we obtain
+		$$d_e(p) = t = 2 \arctanh(\theta(t)) = 2 \arctanh\left(\sqrt{1-\chi e^r}\right),$$
+		so we are done if we show that 
+		\begin{equation}
+			4 = \chi e^r \Psi(p). \label{done}
+		\end{equation}
+		By definition of the global coordinates, we find
+		$$U = \sum_{i=1}^n v_i(p)V, \quad X = \sum_{i=1}^m y_i(p) Y_i,\quad \text{and} \quad rA = \lambda(p) A,$$
+		which immediately imply that 
+		$$|U|^2 = \sum_{i=1}^n (v_i(p))^2, \quad |X|^2 = \sum_{i=1}^m (y_i(p))^2, \quad \text{and} \quad r = \lambda(p).$$
+		Thus, $\Psi(p)$ can be written as 
+		$$
+			\Psi(p) = e^{-r} \left(1 + \frac14 |U|^2 + e^r\right)^2 + e^{-r} |X|^2. \label{psi}
+		$$
+		Therefore, by substituting the equation above into (\ref{done}), we know we are done if we show that
+		\begin{equation}
+			\boxed{4=  \chi\left(1 + \frac14 |U|^2 + e^r\right)^2 + \chi |X|^2. \label{epic}}
+		\end{equation}
+		
+	
+		\textbf{Step 2.} Before we show $(\ref{epic})$, let us derive some useful formulas that follow from $(\ref{U})$ and $(\ref{X})$. First, by taking the inner product of (\ref{U}) with itself, we find 
+		\begin{align}
+			|U|^2 &= \frac{4\theta^2(1-s\theta)^2}{\chi^2}|V|^2 + \frac{8 \theta^3}{\chi^2}\underbrace{\langle J_Y V,V \rangle}_{=0} + \frac{4 \theta^4}{\chi^2} \underbrace{|J_Y V|^2}_{=|Y|^2 |V|^2}\nonumber \\
+			&= \frac{4\theta^2(1-s\theta)^2}{\chi^2}|V|^2 + \frac{4 \theta^4 |Y|^2}{\chi^2}|V|^2 \nonumber\\
+			&= \frac{4 \theta^2}{\chi} |V|^2. \nonumber
+		\end{align}
+		The second equality follows because $\langle J_Y V,V \rangle = \langle [V,V],Y \rangle = 0$ by definition, and $|J_Y V|^2 = |Y|^2 |V|^2$ by Proposition \ref{J equation}. The last equality follows from the definition of $\chi$. Rearranging then gives 
+		\begin{equation}
+			|V|^2 = \frac{\chi}{4 \theta^2} |U|^2. \label{V squared}
+		\end{equation}
+		Next, is straightforward to see that (\ref{X}) gives
+		\begin{equation}
+			|Y|^2 = \frac{\chi^2}{4 \theta^2}|X|^2. \label{Y squared}
+		\end{equation}
+		Substituting (\ref{Y squared}) into the formula for $\chi$ lets us write 
+		$$\chi =(1-s\theta)^2 + \frac{\chi^2}{4}|X|^2,$$
+		so after straightforward manipulations, we find
+		\begin{align}
+			\frac{\chi^2}{4} + s^2 \theta^2 &= \chi - 1 + 2 s \theta,\label{lol1} \\
+			(1-s\theta)^2 &= \chi - \frac{\chi}{4}|X|^2. \label{lol2}
+		\end{align}
+	
+		\textbf{Step 3.} We are now ready to show (\ref{epic}). Since $V + Y + sA$ is a unit vector, we know that $1 = |V|^2 + |Y|^2 + s^2$. Substituting (\ref{V squared}) and (\ref{Y squared}), gives 
+		$$
+			1 = \frac{\chi}{4 \theta^2} |U|^2 + \frac{\chi^2}{4 \theta^2}|X|^2 + s^2.
+		$$
+		After multiplying by $\theta^2$, we obtain 
+		\begin{equation}
+			\theta^2 = \frac{\chi}{4} |U|^2 + \frac{\chi^2}{4} + s^2 \theta^2.
+		\end{equation}
+		After substituting  (\ref{lol1}) and (\ref{theta squared}) into the equation above and rearranging, we find
+		$$2(1-s\theta) = \chi\left(1 + \frac14 |U|^2 + e^r\right).$$
+		Squaring the equation above then substituting (\ref{lol2}) gives 
+		$$4\left( \chi - \frac{\chi}{4}|X|^2\right) = \chi^2\left(1 + \frac14 |U|^2 + e^r\right)^2.$$
+		After dividing by $\chi$ and rearranging, we obtain 
+		$$4 = \chi\left(1 + \frac14 |U|^2 + e^r\right)^2 + \chi |X|^2,$$
+		which is (\ref{epic}). This completes the proof.
+	\end{proof}
+	
+
+
+	\begin{proposition}
+		The map $d_e:S\backslash\{p\} \rightarrow \R$ is isoparametric.
+	\end{proposition}
+	\begin{proof}
+		By proposition \ref{isoparametric invariant}, it suffices to show that $\Psi$ is isoparametric. We are done if we show that
+		\begin{align}
+			\Delta \Psi &= \left(1+\frac n2 + m\right)\Psi - 2(m+1), \label{laplace}\\
+			|\grad \Psi|^2 &= \Psi^2 - 4 \Psi. \label{grad}
+		\end{align}
+	
+		In order to simplify notation, let us write
+		$$\kappa := 1 + \frac14 \sum_{i=1}^n v_i^2 + e^\lambda.$$
+		Then we can write 
+		$$\Psi = e^{-\lambda} \left(\kappa^2 + \sum_{i=1}^m y_i^2\right).$$
+		
+		Let us first show (\ref{laplace}). Let $j$ be a fixed index. Then
+		\begin{align*}
+			&\frac{\partial\Psi }{\partial v_j} = e^{-\lambda }\kappa v_j, 
+			&\frac{\partial\Psi }{\partial y_j}  = 2e^{-\lambda }y_j,  \qquad \qquad 
+			&\frac{\partial\Psi}{\partial \lambda} =2\kappa - \Psi, \\
+			&\frac{\partial^2 \Psi}{\partial v_j^2} = e^{-\lambda } \kappa + \frac12 e^{-\lambda} v_j^2, 
+			&\frac{\partial^2 \Psi}{ \partial y_j^2} = 2e^{-\lambda},  \qquad  \qquad
+			&\frac{\partial^2 \Psi}{ \partial \lambda^2} =  \Psi - 2\kappa + 2e^{\lambda}.
+		\end{align*}
+		By Proposition \ref{laplace coordinates}, we have an expression for $\Delta \Psi$ in terms of partial derivatives. Substituting then gives
+		\begin{align*}
+			\Delta \Psi &= e^\lambda \sum_{i=1}^n \frac{\partial^2\Psi}{\partial v_i^2} + e^{2 \lambda} \sum_{i=1}^m \frac{\partial^2\Psi}{\partial y_i^2} + \left( \frac14 e^\lambda \sum_{i=1}^n v_i^2\right) \sum_{i=1}^m \frac{\partial^2\Psi}{\partial y_i^2} + \frac{\partial^2\Psi}{\partial \lambda^2} \\
+			&\qquad\qquad- \left( m+ \frac n2\right) \frac{\partial\Psi}{\partial \lambda} + e^\lambda \sum_{i=1}^n \sum_{j=1}^n \sum_{k=1}^m \mu_{ij}^k v_i  \frac{\partial^2\Psi}{\partial v_j\partial y_k } \\
+			&= n \kappa + \frac12 \sum_{i=1}^n v_i^2 + 2e^\lambda m + \frac12 m \sum_{i=1}^n v_i^2 + \Psi - 2\kappa + 2e^\lambda \\
+			&\qquad\qquad - \left(m + \frac n2\right)2 \kappa + \left(m + \frac n2\right) \Psi \\
+			&= \left(1+\frac n2 + m\right)\Psi - 2(m+1),
+		\end{align*}
+		as we wished.
+		
+		Next, let us show (\ref{grad}). Since $V_1,\ldots,V_n,Y_1,\ldots, Y_m, A$ form an orthonormal frame on $S$, we know that 
+		\begin{equation}
+			|\grad \Psi|^2 = \sum_{i=1}^n (V_i \Psi)^2 + \sum_{i=1}^m (Y_i \Psi)^2 + (A\Psi)^2. \label{grad formula}
+		\end{equation}
+		Let $i$ be a fixed index. Then by Proposition \ref{frame},
+		\begin{align*}
+			&V_i \Psi = e^{-\lambda/2} \kappa v_i - e^{-\lambda/2} \sum_{j,k} \mu_{ij}^k y_k, \quad Y_i \Psi = 2y_i, \qquad A\Psi = 2\kappa - \Psi, \\
+			&(V_i \Psi)^2 = e^{-\lambda} \kappa^2 v_i^2 - 2e^{-\lambda } \kappa\sum_{j,k} \mu_{ij}^k v_i v_j y_k + e^{-\lambda} \sum_{j,k,r,s} \mu_{ij}^k \mu_{ir}^s v_j v_r y_k y_s, \\
+			&\quad\qquad\qquad\qquad\qquad\qquad\qquad\qquad(Y_i \Psi)^2 = 4 y_i^2, \quad (A\Psi)^2 = \Psi^2 -4 \kappa \Psi + 4\kappa^2.
+		\end{align*}
+		Substituting the above into (\ref{grad formula}) yields
+		\begin{align}
+			\begin{split}
+				\label{lol4}
+				|\grad \Psi|^2 &= \sum_{i=1}^n (V_i \Psi)^2 + \sum_{i=1}^m (Y_i \Psi)^2 + (A\Psi)^2 \\
+				&= e^{-\lambda} \kappa^2 \sum_i v_i^2 - 2e^{-\lambda } \kappa\sum_{i,j,k} \mu_{ij}^k v_i v_j y_k + e^{-\lambda} \sum_{i, j,k,r,s} \mu_{ij}^k \mu_{ir}^s v_j v_r y_k y_s \\
+				& \qquad + 4 \sum_{i} y_i^2+ \Psi^2 -4\Psi - \Psi\left(\sum_i v_i^2\right)  -4e^\lambda \Psi+ 4\kappa^2.
+			\end{split}
+		\end{align}
+		Proposition \ref{structure coefficients} implies that 
+		\begin{align}
+			\sum_{i,j,k} \mu_{ij}^k v_i v_j y_k  &= 0,\label{l} \\
+			\sum_{i, j,k,r,s} \mu_{ij}^k \mu_{ir}^s v_j v_r y_k y_s &= \sum_{i,j,k,s} \mu_{ij}^k \mu_{ij}^s v_j^2 y_k y_s  \nonumber \\
+			&=\sum_{j,k} v_j^2 y_k^2 \nonumber \\
+			&= \left(\sum_i v_i^2 \right) \left( \sum_k y_k^2\right). \label{lol3}
+		\end{align}
+		Substituting (\ref{l}) and (\ref{lol3}) into (\ref{lol4}) gives $|\grad \Psi|^2 = \Psi^2 - 4\Psi$,
+		as desired. This completes the proof.
+	\end{proof}
+
+
+
+	\begin{theorem}
+		The Damek-Ricci space $S$ is a harmonic space.
+	\end{theorem}
+	\begin{proof}
+		\alert{Prove this.}
+	\end{proof}
+	
+	
+
+	\bibliographystyle{alpha}
+	\bibliography{references}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
